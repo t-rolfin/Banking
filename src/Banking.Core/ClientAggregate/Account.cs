@@ -9,15 +9,17 @@ namespace Banking.Core.ClientAggregate
 {
     public class Account
     {
+        public Account(string iban, AccountType accountType, CurrencyType currencyType)
+        {
+            Id = Guid.NewGuid();
+            IBAN = iban;
+            AccountType = accountType;
+            CurrencyType = currencyType;
+        }
+
         public Guid Id { get; set; }
         public string IBAN { get; set; }
-        public string PIN { get; protected set; }
         public AccountType AccountType { get; set; }
         public CurrencyType CurrencyType { get; set; }
-
-        public bool isClosed { get; }
-
-        public void ChangePIN(string newPin)
-            => this.PIN = newPin;
     }
 }

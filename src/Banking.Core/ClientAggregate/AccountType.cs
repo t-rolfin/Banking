@@ -8,8 +8,11 @@ namespace Banking.Core.ClientAggregate
 {
     public class AccountType
     {
+        public AccountType(string name)
+        {
+            Name = name;
+        }
+
         public string Name { get; init; }
-        public float Commision { get; init; }
-        public float FilingFee { get; init; }
     }
 }

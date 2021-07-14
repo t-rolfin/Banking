@@ -13,16 +13,18 @@ namespace Banking.Core.ClientAggregate
         List<Account> _accounts = new List<Account>();
 
         protected Client() { }
-        protected Client(string cnp, string firstName, string lastName, string address)
+        public Client(string cnp, string pin, string firstName, string lastName, string address)
         {
             CNP = cnp;
             FirstName = firstName;
             LastName = lastName;
             Address = address;
+            PIN = pin;
         }
 
         // Este folosit ca si ID
         public string CNP { get; init; }
+        public string PIN { get; set; }
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string Address { get; init; }
@@ -41,8 +43,7 @@ namespace Banking.Core.ClientAggregate
         {
             //TODO: varificare PIN
 
-            var requiredAccount = CheckIfAccountExist(accountId);
-            requiredAccount.ChangePIN(newPIN);
+            this.PIN = newPIN;
         }
 
         Account CheckIfAccountExist(Guid accountId)
