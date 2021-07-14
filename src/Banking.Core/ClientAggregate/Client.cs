@@ -39,7 +39,7 @@ namespace Banking.Core.ClientAggregate
         public void CloseAccount(Guid accountId) 
             => _accounts.Remove(CheckIfAccountExist(accountId));
 
-        public void ChangePINFor(Guid accountId, string newPIN)
+        public void ChangePIN(string newPIN)
         {
             //TODO: varificare PIN
 
