@@ -21,5 +21,31 @@ namespace Banking.Core.ClientAggregate
         public string IBAN { get; set; }
         public AccountType AccountType { get; set; }
         public CurrencyType CurrencyType { get; set; }
+        public decimal Amount { get; set; }
+
+        public decimal Withdrawal(decimal withdrawalValue)
+        {
+            var commitions = AccountType.Operations
+                .Find(x => x.OperationType == OperationType.Withdrawal)
+                .Commission;
+
+            var commitionValue = ((withdrawalValue * (decimal)commitions.Percent) / 100) + (decimal)commitions.Fixed;
+
+            this.Amount -= (withdrawalValue + commitionValue);
+
+            return commitionValue;
+        }
+        
+        public decimal Deposit(decimal depositedValue)
+        {
+            var commitions = AccountType.Operations
+                .Find(x => x.OperationType == OperationType.Deposit).Commission;
+
+            var commitionValue = (depositedValue * (decimal)(commitions.Percent / 100)) + (decimal)commitions.Fixed;
+
+            Amount += (depositedValue - commitionValue);
+
+            return commitionValue;
+        }
     }
 }
