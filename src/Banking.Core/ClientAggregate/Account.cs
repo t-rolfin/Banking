@@ -29,7 +29,7 @@ namespace Banking.Core.ClientAggregate
                 .Find(x => x.OperationType == OperationType.Withdrawal)
                 .Commission;
 
-            var commitionValue = ((withdrawalValue * (decimal)commitions.Percent) / 100) + (decimal)commitions.Fixed;
+            var commitionValue = (withdrawalValue * (decimal)(commitions.Percent) / 100) + (decimal)commitions.Fixed;
 
             this.Amount -= (withdrawalValue + commitionValue);
 
