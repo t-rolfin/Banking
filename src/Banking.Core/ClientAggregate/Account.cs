@@ -25,27 +25,27 @@ namespace Banking.Core.ClientAggregate
 
         public decimal Withdrawal(decimal withdrawalValue)
         {
-            var commitions = AccountType.Operations
+            var commission = AccountType.Operations
                 .Find(x => x.OperationType == OperationType.Withdrawal)
                 .Commission;
 
-            var commitionValue = (withdrawalValue * (decimal)(commitions.Percent) / 100) + (decimal)commitions.Fixed;
+            var commissionValue = (withdrawalValue * (decimal)(commission.Percent) / 100) + (decimal)commission.Fixed;
 
-            this.Amount -= (withdrawalValue + commitionValue);
+            this.Amount -= (withdrawalValue + commissionValue);
 
-            return commitionValue;
+            return commissionValue;
         }
         
         public decimal Deposit(decimal depositedValue)
         {
-            var commitions = AccountType.Operations
+            var commissions = AccountType.Operations
                 .Find(x => x.OperationType == OperationType.Deposit).Commission;
 
-            var commitionValue = (depositedValue * (decimal)(commitions.Percent / 100)) + (decimal)commitions.Fixed;
+            var commissionValue = (depositedValue * (decimal)(commissions.Percent / 100)) + (decimal)commissions.Fixed;
 
-            Amount += (depositedValue - commitionValue);
+            Amount += (depositedValue - commissionValue);
 
-            return commitionValue;
+            return commissionValue;
         }
     }
 }
