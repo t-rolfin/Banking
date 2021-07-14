@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Banking.Console
+namespace Banking.ConsoleUI
 {
     class Program
     {
