@@ -20,7 +20,7 @@ namespace Banking.Core.AccountTypeFactory
 
             basicAccount.AddOperation(
                     OperationType.Withdrawal,
-                    new Commission(0, 0)
+                    new Commission(1.5f, 2)
                 );
 
             basicAccount.AddOperation(
@@ -30,7 +30,7 @@ namespace Banking.Core.AccountTypeFactory
 
             basicAccount.AddOperation(
                     OperationType.Deposit,
-                    new Commission(0, 0)
+                    new Commission(1, 0)
                 );
 
             return basicAccount;
