@@ -1,4 +1,5 @@
 ﻿using Banking.Core.Enums;
+using Banking.Core.Exceptions;
 using Banking.Core.Shared;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,8 @@ namespace Banking.Core.Entities
 
         public decimal Withdrawal(decimal withdrawalValue)
         {
+            if(withdrawalValue > this.Amount) throw new InsufficientAmountException();
+
             if (this.AccountType.HasCommisions)
             {
                 var commissions = GetCommissionValuesByOperationType(OperationType.Withdrawal);

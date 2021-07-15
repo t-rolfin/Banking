@@ -16,7 +16,7 @@ namespace Banking.Core.Entities
 
         public string Name { get; init; }
         public bool HasCommisions { get; protected set; }
-        public List<Operation> Operations { get; }
+        public List<Operation> Operations { get; } = new();
 
 
         public void AddOperation(OperationType operationType, Commission commission)
