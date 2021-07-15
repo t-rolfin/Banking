@@ -1,4 +1,4 @@
-using Banking.Core.ClientAggregate;
+using Banking.Core.Entities;
 using FluentAssertions;
 using System;
 using Xunit;

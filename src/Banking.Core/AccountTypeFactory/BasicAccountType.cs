@@ -1,4 +1,5 @@
-﻿using Banking.Core.ClientAggregate;
+﻿using Banking.Core.Entities;
+using Banking.Core.Enums;
 using Banking.Core.Shared;
 using System;
 using System.Collections.Generic;
