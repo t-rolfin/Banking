@@ -12,19 +12,21 @@ namespace Banking.Core.Entities
     {
         List<Transaction> _transactions = new List<Transaction>();
 
-        public Account(string iban, AccountType accountType, CurrencyType currencyType)
+        public Account(string clientCNP, string iban, AccountType accountType, CurrencyType currencyType)
         {
             Id = Guid.NewGuid();
             IBAN = iban;
             AccountType = accountType;
             CurrencyType = currencyType;
+            ClientCNP = clientCNP;
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; }
+        public string ClientCNP { get; }
         public string IBAN { get; set; }
-        public AccountType AccountType { get; set; }
-        public CurrencyType CurrencyType { get; set; }
-        public decimal Amount { get; set; }
+        public AccountType AccountType { get; init; }
+        public CurrencyType CurrencyType { get; init; }
+        public decimal Amount { get; protected set; }
         public bool IsClosed { get; protected set; }
 
         public IReadOnlyList<Transaction> Transactions
@@ -55,6 +57,7 @@ namespace Banking.Core.Entities
             }
             else
             {
+                this.Amount -= withdrawalValue;
                 return 0;
             }
         }
@@ -82,6 +85,7 @@ namespace Banking.Core.Entities
             }
             else
             {
+                this.Amount += depositedValue;
                 return 0;
             }
         }
