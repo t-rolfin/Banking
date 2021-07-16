@@ -14,9 +14,7 @@ namespace Banking.Tests
 {
     public class AccountTests
     {
-
         private Account _sut;
-        private Account _sutGold;
 
         public AccountTests()
         {
@@ -25,45 +23,57 @@ namespace Banking.Tests
             _sut = fixture.Build<Account>()
                 .With(x => x.AccountType, new BasicAccountType().GetAccountType())
                 .Create();
-
-            _sutGold = fixture.Build<Account>()
-                .With(x => x.AccountType, new GoldAccountType().GetAccountType())
-                .Create();
         }
 
         [Fact]
-        public void Basic_ShouldThrowInsufficientAmountExceptionWhenAmountIsToLow()
+        public void ShouldThrowInsufficientAmountExceptionWhenAmountIsToLow()
         {
             Func<decimal> func = () => _sut.Withdrawal(300);
             func.Should().Throw<InsufficientAmountException>();
         }
 
-        [Fact]
-        public void Basic_ShouldTakeTheCommissionWhenDeposit()
+        [Theory]
+        [InlineData(248)]
+        [InlineData(1538)]
+        [InlineData(23)]
+        public void ShouldTakeTheCommissionWhenDeposit(decimal depositedValue)
         {
-            decimal expect = 297;
+            var expectedValue = 0M;
 
-            _sut.Deposit(300);
+            var commission = _sut.Deposit(depositedValue);
 
-            _sut.Amount.Should().Be(expect);
+            expectedValue = depositedValue - commission;
+
+            _sut.Amount.Should().Be(expectedValue);
         }
 
         [Fact]
-        public void Basic_ShoulAddTransactionWheDepositAnAmountOfMoney()
+        public void ShoulAddTransactionWhenDepositAnAmountOfMoney()
         {
-            _sut.Deposit(300);
+            decimal trabsactionValue = 300M;
+            decimal commision = _sut.Deposit(trabsactionValue);
 
             _sut.Transactions.Count().Should().Be(1);
+            _sut.Transactions.First().Amount.Should().Be(trabsactionValue - commision);
         }
 
-        [Fact]
-        public void Gold_ShouldNotTakeTheCommissionWhenDeposit()
+        [Theory]
+        [InlineData(360, 200)]
+        [InlineData(120, 110)]
+        [InlineData(40, 25)]
+        [InlineData(1024, 700)]
+        public void Basic_ShouldTakeTheCommissionFromAccountAmountWhenWithdrawal(
+            decimal depositedAmount, 
+            decimal withdrawalAmount)
         {
-            int expect = 789;
+            var commission = _sut.Deposit(depositedAmount);
+            var expectedAmount = depositedAmount - commission;
 
-            _sutGold.Deposit(789);
+            var withdrawalCommission = _sut.Withdrawal(withdrawalAmount);
 
-            _sutGold.Amount.Should().Be(expect);
+            expectedAmount -= (withdrawalCommission + withdrawalAmount);
+
+            _sut.Amount.Should().Be(expectedAmount);
         }
 
     }
