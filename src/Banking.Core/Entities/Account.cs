@@ -40,9 +40,7 @@ namespace Banking.Core.Entities
 
             if (this.AccountType.HasCommisions)
             {
-                var commissions = GetCommissionValuesByOperationType(OperationType.Withdrawal);
-
-                var commissionValue = withdrawalValue * (commissions.percent / 100) + commissions.fixedValue;
+                var commissionValue = ApplyCommission(OperationType.Withdrawal, withdrawalValue);
 
                 this.Amount -= (withdrawalValue + commissionValue);
 
@@ -69,9 +67,7 @@ namespace Banking.Core.Entities
         {
             if (this.AccountType.HasCommisions)
             {
-                var commissions = GetCommissionValuesByOperationType(OperationType.Deposit);
-
-                var commissionValue = depositedValue * (commissions.percent / 100) + commissions.fixedValue;
+                var commissionValue = ApplyCommission(OperationType.Withdrawal, depositedValue);
 
                 Amount += (depositedValue - commissionValue);
 
@@ -93,20 +89,19 @@ namespace Banking.Core.Entities
             }
         }
 
-
         public void CloseAccount()
         {
             this.IsClosed = true;
         }
 
-        (decimal percent, decimal fixedValue) GetCommissionValuesByOperationType(OperationType operationType)
+        decimal ApplyCommission(OperationType operationType, decimal value)
         {
             var commission = AccountType.Operations
                 .Find(x => x.OperationType == operationType)
                 .Commission;
 
-            return ((decimal)commission.Percent, (decimal)commission.FixedValue);
-        }
+            return value * (decimal)(commission.Percent / 100) + (decimal)commission.FixedValue;
 
+        }
     }
 }
