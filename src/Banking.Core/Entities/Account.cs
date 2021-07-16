@@ -105,7 +105,7 @@ namespace Banking.Core.Entities
                 .Find(x => x.OperationType == operationType)
                 .Commission;
 
-            return ((decimal)commission.Percent, (decimal)commission.Fixed);
+            return ((decimal)commission.Percent, (decimal)commission.FixedValue);
         }
 
     }

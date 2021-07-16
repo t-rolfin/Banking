@@ -11,7 +11,12 @@ namespace Banking.Core.Repositories
 {
     public class InMemoryClientRepository : IClientRepository
     {
-        private List<Client> _clients;
+        List<Client> _clients;
+
+        public InMemoryClientRepository()
+        {
+            _clients = new();
+        }
 
         public void Add(Client entity)
         {

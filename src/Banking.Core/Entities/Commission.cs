@@ -2,13 +2,13 @@
 {
     public class Commission
     {
-        public Commission(float percent, float @fixed)
+        public Commission(float percent, float fixedValue)
         {
             Percent = percent;
-            Fixed = @fixed;
+            FixedValue = fixedValue;
         }
 
         public float Percent { get; set; }
-        public float Fixed { get; set; }
+        public float FixedValue { get; set; }
     }
 }
