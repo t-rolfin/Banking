@@ -1,4 +1,5 @@
 using Banking.Core.Entities;
+using Banking.Shared.Enums;
 using FluentAssertions;
 using System;
 using Xunit;
@@ -24,7 +25,7 @@ namespace Banking.Tests
                     "1928489323845",
                     "RO49AAAA1B31007593840000",
                     accountType,
-                    Core.Shared.CurrencyType.RON
+                    CurrencyType.RON
                 ));
 
 
@@ -51,7 +52,7 @@ namespace Banking.Tests
                     "1928489323845",
                     "RO49AAAA1B31007593840000",
                     accountType,
-                    Core.Shared.CurrencyType.RON
+                    CurrencyType.RON
                 ));
 
             _sut.Accounts[0].CloseAccount();

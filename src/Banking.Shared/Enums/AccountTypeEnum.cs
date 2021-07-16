@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Banking.Core.Shared
+namespace Banking.Shared.Enums
 {
-    public enum CurrencyType
+    public enum AccountTypeEnum
     {
-        RON = 0,
-        EURO = 1
+        Basic,
+        Silver,
+        Gold
     }
 }

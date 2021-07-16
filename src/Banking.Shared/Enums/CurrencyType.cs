@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Banking.Core.Shared
+namespace Banking.Shared.Enums
 {
-    public interface IRootAggregate { }
+    public enum CurrencyType
+    {
+        RON = 0,
+        EURO = 1
+    }
 }

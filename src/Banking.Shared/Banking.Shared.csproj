@@ -4,8 +4,4 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Banking.Shared\Banking.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

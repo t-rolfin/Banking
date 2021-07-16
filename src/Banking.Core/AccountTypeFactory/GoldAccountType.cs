@@ -1,6 +1,6 @@
 ﻿using Banking.Core.Entities;
 using Banking.Core.Enums;
-using Banking.Core.Shared;
+using Banking.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
