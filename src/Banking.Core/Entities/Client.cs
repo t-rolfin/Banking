@@ -1,4 +1,5 @@
-﻿using Banking.Core.Exceptions;
+﻿using Ardalis.GuardClauses;
+using Banking.Core.Exceptions;
 using Banking.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,13 @@ namespace Banking.Core.Entities
         protected Client() { }
 
         public Client(string cnp, string pin, string firstName, string lastName, string address)
-            => (CNP, PIN, FirstName, LastName, Address) = (cnp, pin, firstName, lastName, address);
+        {
+            CNP = Guard.Against.InvalidFormat(cnp, nameof(cnp), "[0-9]{13}", "The length of CNP must be 13.");
+            PIN = Guard.Against.NullOrWhiteSpace(pin, nameof(pin), "The PIN can't be empty!");
+            FirstName = Guard.Against.NullOrWhiteSpace(firstName, nameof(firstName), "The field FirstName can't be empty!");
+            LastName = Guard.Against.NullOrWhiteSpace(lastName, nameof(lastName), "The field LastName can't be empty!");
+            Address = address;
+        }
 
         public Client(string cnp, string pin, string firstName, string lastName, string address, Account account)
             : this(cnp, pin, firstName, lastName, address)
@@ -35,7 +42,6 @@ namespace Banking.Core.Entities
 
         public void CreateAccount(Account newAccount)
         {
-            //TODO: validare date
             _accounts.Add(newAccount);
         }
 
@@ -49,7 +55,7 @@ namespace Banking.Core.Entities
 
         public void ChangePIN(string newPIN)
         {
-            //TODO: varificare PIN
+            PIN = Guard.Against.NullOrWhiteSpace(newPIN, nameof(newPIN), "The PIN can't be empty!");
             this.PIN = newPIN;
         }
 

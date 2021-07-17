@@ -1,4 +1,5 @@
-﻿using Banking.Core.Enums;
+﻿using Ardalis.GuardClauses;
+using Banking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace Banking.Core.Entities
 
         public void AddOperation(OperationType operationType, Commission commission)
         {
+            Guard.Against.Null(operationType, nameof(AccountType));
+            Guard.Against.Null(commission, nameof(AccountType));
+
             this.Operations.Add(
                     new Operation(operationType, commission)
                 );

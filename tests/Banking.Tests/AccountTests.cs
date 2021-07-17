@@ -1,13 +1,9 @@
-﻿using AutoFixture;
-using Banking.Core.AccountTypeFactory;
+﻿using Banking.Core.AccountTypeFactory;
 using Banking.Core.Entities;
 using Banking.Core.Exceptions;
 using FluentAssertions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Banking.Tests
@@ -18,11 +14,12 @@ namespace Banking.Tests
 
         public AccountTests()
         {
-            var fixture = new Fixture();
-
-            _sut = fixture.Build<Account>()
-                .With(x => x.AccountType, new BasicAccountType().GetAccountType())
-                .Create();
+            _sut = new Account(
+                "1940724273941",
+                "RO49AAAA1B31007593840000",
+                new BasicAccountType().GetAccountType(),
+                Shared.Enums.CurrencyType.RON
+                );
         }
 
         [Fact]

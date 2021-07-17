@@ -1,29 +1,33 @@
-﻿using Banking.Core.Enums;
+﻿using System.Collections.Generic;
 using Banking.Core.Exceptions;
 using Banking.Shared.Enums;
+using Ardalis.GuardClauses;
+using Banking.Core.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Banking.Core.Entities
 {
     public class Account
     {
-        List<Transaction> _transactions = new List<Transaction>();
+        List<Transaction> _transactions = new();
 
         public Account(string clientCNP, string iban, AccountType accountType, CurrencyType currencyType)
         {
             Id = Guid.NewGuid();
-            IBAN = iban;
-            AccountType = accountType;
-            CurrencyType = currencyType;
-            ClientCNP = clientCNP;
+            ClientCNP = Guard.Against.InvalidFormat(clientCNP, nameof(clientCNP), "[0-9]{13}", "The length of CNP must be 13.");
+            IBAN = Guard.Against.InvalidInput(iban, nameof(iban), (x) => 
+            {
+                if (x.Length != 24)
+                    return false;
+                else
+                    return true;
+            }, "Invalid IBAN! If this error occur contact support team.");
+            AccountType = Guard.Against.Null(accountType, nameof(AccountType), "An account type must be provided.");
+            CurrencyType = Guard.Against.Null(currencyType, nameof(currencyType), "A currency type wasn't selected.");
         }
 
         public Guid Id { get; }
-        public string ClientCNP { get; }
+        public string ClientCNP { get; init; }
         public string IBAN { get; set; }
         public AccountType AccountType { get; init; }
         public CurrencyType CurrencyType { get; init; }
