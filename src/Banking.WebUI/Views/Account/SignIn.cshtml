@@ -1,0 +1,111 @@
+﻿@model Banking.Shared.Models.SignInModel
+
+@using Banking.Shared.Enums
+
+@{
+    ViewData["Title"] = "SignIn";
+}
+
+<h1>Sign In</h1>
+
+<hr />
+
+<form asp-action="SignIn" method="post">
+
+    <div class="row">
+        <div class="col w-50">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="FirstName" class="form-control" placeholder="FirstName" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="LastName" class="form-control" placeholder="LastName" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Address" class="form-control" placeholder="Address" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="number" asp-for="CNP" class="form-control" placeholder="CNP" />
+                <span asp-validation-for="CNP" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="password" asp-for="PIN" class="form-control" placeholder="PIN" />
+                <span asp-validation-for="PIN" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="password" asp-for="PINConfig" class="form-control" placeholder="PIN Check" />
+                <span asp-validation-for="PINConfig" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign In</button>
+
+        </div>
+
+        <div class="col">
+            <div class="form-group justify-content-center align-content-center border rounded p-2">
+                <h3 class="m-2 p-0">Account Type</h3>
+                <hr />
+
+                @foreach (AccountTypeEnum accountTypeEnum in (AccountTypeEnum[])Enum.GetValues(typeof(AccountTypeEnum)))
+                {
+                    <div class="row border m-auto justify-content-between align-items-center p-2 accountType_enum" style="margin-bottom: 1rem !important;"
+                         onclick="select(@(accountTypeEnum.ToString().ToLower()), '.accountType_enum')">
+                        <label class="m-0" asp-for="AccountType">@accountTypeEnum </label>
+                        <input type="radio" value="@((int)accountTypeEnum)" asp-for="AccountType"
+                               id="@(accountTypeEnum.ToString().ToLower())"
+                               checked="@(Model?.AccountType == accountTypeEnum)" />
+                    </div>
+                }
+            </div>
+
+            <div class="form-group justify-content-center mt-5 mb-5 border rounded p-2">
+                <h4>Currency Type</h4>
+                <hr />
+                <div class="row m-auto">
+                    @foreach (CurrencyType currencyType in (CurrencyType[])Enum.GetValues(typeof(CurrencyType)))
+                    {
+                        <div class="col justify-content-center currencyType_enum"
+                             onclick="select(@(currencyType.ToString().ToLower()), '.currencyType_enum')">
+                            <input type="radio" value="@((int)currencyType)" asp-for="CurrencyType"
+                                   id="@(currencyType.ToString().ToLower())"
+                                   checked="@(Model?.CurrencyType == currencyType)" />
+                            <label>@currencyType.ToString()</label>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</form>
+
+@section Scripts{
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function select(name, containerClass) {
+
+            $('' + containerClass + ' > input[type=radio]').attr('checked', false);
+
+            $(name).attr('checked', true);
+        }
+    </script>
+}
