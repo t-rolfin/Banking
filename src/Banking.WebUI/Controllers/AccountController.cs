@@ -29,5 +29,11 @@ namespace Banking.WebUI.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult LogIn(LogInModel model)
+        {
+            return View();
+        }
     }
 }
