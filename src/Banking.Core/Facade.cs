@@ -28,23 +28,32 @@ namespace Banking.Core
             GenerateBankAccounts();
         }
 
-        public void RegisterClient(string cnp, string pin, string firstName,
+        public bool RegisterClient(string cnp, string pin, string firstName,
             string lastName, string address, AccountTypeEnum accountType, CurrencyType currencyType)
         {
             try
             {
+                if (_clientRepository.GetByCNP(cnp) is not null)
+                    return false;
+
+                var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
+                var IBAN = IBANGenerator.Generate();
+
                 var encryptedPIN = EncryptionManager.Encrypt(pin, _encryptionKey);
 
                 Client client = new(cnp, encryptedPIN, firstName, lastName, address);
 
-                CreateAccount(cnp, accountType, currencyType);
+                client.CreateAccount(
+                        new Account(client.CNP, IBAN, _accountType, currencyType)
+                    );
 
                 _clientRepository.Add(client);
 
+                return true;
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return false;
             }
         }
 
