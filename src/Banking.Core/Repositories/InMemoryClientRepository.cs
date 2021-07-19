@@ -27,8 +27,6 @@ namespace Banking.Core.Repositories
         {
             var client = _clients.FirstOrDefault(x => x.CNP == cnp);
 
-            _ = client ?? throw new ClientNotFoundException("The client with specified CNP can not be found.");
-
             return client;
         }
 
