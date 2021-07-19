@@ -25,14 +25,25 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav flex-grow-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">LogIn</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="SignIn">SignIn</a>
-                        </li>
-                    </ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div>@Context.User.Claims.ToList().First().Value</div>
+
+                        <form method="post" asp-controller="Account" asp-action="LogOut">
+                            <input type="submit" value="Logout" />
+                        </form>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav flex-grow-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">LogIn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="SignIn">SignIn</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

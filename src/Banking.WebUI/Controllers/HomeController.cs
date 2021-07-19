@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Banking.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Banking.WebUI.Controllers
 {
@@ -23,6 +24,7 @@ namespace Banking.WebUI.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

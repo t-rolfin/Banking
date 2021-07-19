@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Banking.Core;
+using Banking.Core.AccountTypeFactory;
+using Banking.Core.Interfaces;
+using Banking.Core.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +30,17 @@ namespace Banking.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(x =>
+                {
+                    x.LoginPath = "/Account/LogIn";
+                });
+
+
+            services.AddTransient<IFacade, Facade>();
+            services.AddTransient<IClientRepository, InMemoryClientRepository>();
+            services.AddSingleton<AccountTypeProviderFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +61,9 @@ namespace Banking.WebUI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
