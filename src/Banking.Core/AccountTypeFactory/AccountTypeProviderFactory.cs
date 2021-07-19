@@ -14,19 +14,21 @@ namespace Banking.Core.AccountTypeFactory
 
         public AccountTypeProviderFactory()
         {
+            this.accountType = new();
             var accountTypeProviderType = typeof(IAccountType);
             accountType = accountTypeProviderType.Assembly
-                .ExportedTypes.Where(x => x.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                .Select(x => {
-                    var parameterlessCtor = x.GetConstructors().SingleOrDefault(y => y.GetParameters().Length == 0);
-                    _ = parameterlessCtor ?? throw new ArgumentNullException();
-                    return Activator.CreateInstance(x);
-                }).Cast<IAccountType>().ToList();
+                .ExportedTypes.Where(x => x.IsAssignableTo(accountTypeProviderType) && !x.IsInterface && !x.IsAbstract)
+                .Select(x =>
+                 {
+                     var parameterlessCtor = x.GetConstructors().SingleOrDefault(y => y.GetParameters().Length == 0);
+                     _ = parameterlessCtor ?? throw new ArgumentNullException();
+                     return Activator.CreateInstance(x);
+                 }).Cast<IAccountType>().ToList();
         }
 
-        public AccountType GetAccountTypeByType(AccountTypeEnum accountType)
+        public AccountType GetAccountTypeByType(AccountTypeEnum accountTypeParm)
         {
-            return this.accountType.Find(x => x.AccountType == accountType).GetAccountType();
+            return this.accountType.Find(x => x.AccountType == accountTypeParm)?.GetAccountType();
         }
     }
 }
