@@ -6,6 +6,8 @@ using Banking.Core;
 using Banking.Core.AccountTypeFactory;
 using Banking.Core.Interfaces;
 using Banking.Core.Repositories;
+using Banking.Infrastructure;
+using Banking.Shared.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +32,14 @@ namespace Banking.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddSingleton(x => {
+                var connectionString = Configuration.GetConnectionString("clientConnectionString");
+                return new ConnectionString(connectionString);
+            });
+
+            services.AddDbContext<ClientContext>();
+            services.AddTransient<ClientContext>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(x =>
