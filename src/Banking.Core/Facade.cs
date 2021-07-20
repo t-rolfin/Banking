@@ -70,7 +70,7 @@ namespace Banking.Core
 
                 return pin == decryptedPIN ? true : false;
             }
-            catch
+            catch (Exception ex)
             {
                 throw;
             }

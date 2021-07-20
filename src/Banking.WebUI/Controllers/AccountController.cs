@@ -21,14 +21,14 @@ namespace Banking.WebUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult SignIn()
+        public IActionResult Register()
         {
-            var model = new SignInModel();
+            var model = new RegisterModel();
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(SignInModel model)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -61,6 +61,7 @@ namespace Banking.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync();
@@ -68,14 +69,35 @@ namespace Banking.WebUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult LogIn()
+        public IActionResult LogIn(string returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public IActionResult LogIn(LogInModel model)
+        [AllowAnonymous]
+        public async Task<IActionResult> LogIn(LogInModel model, string returnUrl = null)
         {
+            if(ModelState.IsValid)
+            {
+                var result = _facade.IdentifyClient(model.CNP, model.PIN);
+                
+                if(result)
+                {
+                    var claims = new[] {
+                        new Claim(ClaimTypes.NameIdentifier, model.CNP.ToString()),
+                        new Claim(ClaimTypes.Name, model.CNP),
+                    };
+
+                    var identity = new ClaimsIdentity(claims, "LogIn");
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+                    return string.IsNullOrWhiteSpace(returnUrl) ? RedirectPermanent("/") : RedirectPermanent(returnUrl);
+                }
+            }
+
             return View();
         }
     }

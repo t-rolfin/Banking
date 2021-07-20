@@ -39,7 +39,7 @@ namespace Banking.WebUI
 
 
             services.AddTransient<IFacade, Facade>();
-            services.AddTransient<IClientRepository, InMemoryClientRepository>();
+            services.AddSingleton<IClientRepository, InMemoryClientRepository>();
             services.AddSingleton<AccountTypeProviderFactory>();
         }
 

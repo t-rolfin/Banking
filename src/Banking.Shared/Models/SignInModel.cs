@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Banking.Shared.Models
 {
-    public class SignInModel
+    public class RegisterModel
     {
-        public SignInModel()
+        public RegisterModel()
         { }
 
-        public SignInModel(string cNP, string pIN, string pINConfig, string firstName, 
+        public RegisterModel(string cNP, string pIN, string pINConfig, string firstName, 
             string lastName, string address, CurrencyType currencyType, AccountTypeEnum accountType)
         {
             CNP = cNP;
