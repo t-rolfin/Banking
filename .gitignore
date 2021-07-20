@@ -9,6 +9,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+/src/Banking.WebUI/Migrations
+appsettings.local.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
