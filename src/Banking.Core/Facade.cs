@@ -138,6 +138,11 @@ namespace Banking.Core
             }
         }
 
+        public List<Account> GetUserAccounts(string cnp)
+        {
+            return _clientRepository.GetClientAccounts(cnp);
+        }
+
 
         void GenerateBankAccounts()
         {

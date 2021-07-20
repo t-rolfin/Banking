@@ -11,5 +11,6 @@ namespace Banking.Core.Interfaces
     {
         Client GetByCNP(string cnp);
         void UpdatePIN(Client client);
+        List<Account> GetClientAccounts(string cnp);
     }
 }

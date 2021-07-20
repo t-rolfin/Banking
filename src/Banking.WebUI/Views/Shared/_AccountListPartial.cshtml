@@ -1,0 +1,23 @@
+﻿@model Banking.Shared.Models.AccountListModel 
+
+
+    <div class="container row">
+
+        @if(Model.Accounts is not null){
+
+            foreach (var account in Model.Accounts)
+            {
+                <div class="card border">
+                    @account.AccountType.ToString()
+                    @account.CurrencyType.ToString()
+                    @account.Amount
+                </div>
+            }
+
+        }
+        else
+        {
+            <div>You do not have an account!</div>
+        }
+
+    </div>

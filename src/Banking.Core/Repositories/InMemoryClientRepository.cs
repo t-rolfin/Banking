@@ -30,6 +30,13 @@ namespace Banking.Core.Repositories
             return client;
         }
 
+        public List<Account> GetClientAccounts(string cnp)
+        {
+            var client = GetByCNP(cnp);
+
+            return client.Accounts.ToList();
+        }
+
         public void UpdatePIN(Client client)
         {
             var dbClient = GetByCNP(client.CNP);
