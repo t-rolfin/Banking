@@ -16,7 +16,7 @@ namespace Banking.Core.AccountTypeFactory
 
         public AccountType GetAccountType()
         {
-            var basicAccount = new AccountType("Gold");
+            var basicAccount = new AccountType("Basic");
 
             basicAccount.AddOperation(
                     OperationType.Withdrawal,
