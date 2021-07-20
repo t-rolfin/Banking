@@ -11,10 +11,11 @@ namespace Banking.Core.Entities
     {
         List<Transaction> _transactions = new();
 
-        public Account(string clientCNP, string iban, AccountType accountType, CurrencyType currencyType)
+        protected Account() { }
+
+        public Account(int clientId, string iban, AccountType accountType, CurrencyType currencyType)
         {
-            Id = Guid.NewGuid();
-            ClientCNP = Guard.Against.InvalidFormat(clientCNP, nameof(clientCNP), "[0-9]{13}", "The length of CNP must be 13.");
+            ClientId = Guard.Against.Null(clientId, nameof(clientId));
             IBAN = Guard.Against.InvalidInput(iban, nameof(iban), (x) => 
             {
                 if (x.Length != 24)
@@ -26,15 +27,15 @@ namespace Banking.Core.Entities
             CurrencyType = Guard.Against.Null(currencyType, nameof(currencyType), "A currency type wasn't selected.");
         }
 
-        public Guid Id { get; }
-        public string ClientCNP { get; init; }
+        public int Id { get; }
+        public int ClientId { get; init; }
         public string IBAN { get; set; }
-        public AccountType AccountType { get; init; }
-        public CurrencyType CurrencyType { get; init; }
+        public virtual AccountType AccountType { get; init; }
+        public virtual CurrencyType CurrencyType { get; init; }
         public decimal Amount { get; protected set; }
         public bool IsClosed { get; protected set; }
 
-        public IReadOnlyList<Transaction> Transactions
+        public virtual IReadOnlyList<Transaction> Transactions
             => _transactions.AsReadOnly();
 
 

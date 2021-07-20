@@ -31,13 +31,13 @@ namespace Banking.Core.Entities
         }
 
 
-        // Este folosit ca si ID
+        public int Id { get; set; }
         public string CNP { get; init; }
         public string PIN { get; set; }
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string Address { get; init; }
-        public IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
+        public virtual IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
 
 
         public void CreateAccount(Account newAccount)
@@ -45,7 +45,7 @@ namespace Banking.Core.Entities
             _accounts.Add(newAccount);
         }
 
-        public void CloseAccount(Guid accountId)
+        public void CloseAccount(int accountId)
         {
             var account = _accounts.Find(x => x.Id == accountId)
                 ?? throw new AccountNotFoundException("There is no account with specified ID.");

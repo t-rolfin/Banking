@@ -10,6 +10,9 @@ namespace Banking.Core.Entities
 {
     public class Transaction
     {
+
+        protected Transaction() { }
+
         public Transaction(decimal amount, Account sourceAccount, Account destinationAccount, 
             OperationType transactionType, CurrencyType currencyType )
         {
@@ -20,11 +23,11 @@ namespace Banking.Core.Entities
             CurrencyType = currencyType;
         }
 
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
-        public Account SourceAccount { get; set; }
-        public Account DestinationAccount { get; set; }
+        public virtual Account SourceAccount { get; set; }
+        public virtual Account DestinationAccount { get; set; }
         public OperationType TransactionType { get; set; }
         public CurrencyType CurrencyType { get; set; }
     }

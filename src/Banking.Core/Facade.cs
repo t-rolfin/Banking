@@ -44,7 +44,7 @@ namespace Banking.Core
                 Client client = new(cnp, encryptedPIN, firstName, lastName, address);
 
                 client.CreateAccount(
-                        new Account(client.CNP, IBAN, _accountType, currencyType)
+                        new Account(client.Id, IBAN, _accountType, currencyType)
                     );
 
                 _clientRepository.Add(client);
@@ -126,7 +126,7 @@ namespace Banking.Core
                 var client = _clientRepository.GetByCNP(cnp);
 
                 client.CreateAccount(
-                    new Account(client.CNP, IBAN, _accountType, currencyType)
+                    new Account(client.Id, IBAN, _accountType, currencyType)
                     );
 
                 //TODO: update client
@@ -149,8 +149,8 @@ namespace Banking.Core
             var IBAN = IBANGenerator.Generate();
             var accountType = _accountTypeFactory.GetAccountTypeByType(AccountTypeEnum.Gold);
 
-            _bankAccount = new Account("0000000000000", IBAN, accountType, CurrencyType.RON);
-            _cashAccount = new Account("0000000000000", IBAN, accountType, CurrencyType.RON);
+            _bankAccount = new Account(123, IBAN, accountType, CurrencyType.RON);
+            _cashAccount = new Account(123, IBAN, accountType, CurrencyType.RON);
         }
         Account GetAccountForClient(string cnp, string iban)
         {
