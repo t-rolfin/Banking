@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Banking.Shared.Helpers;
+using Banking.Core.Entities;
 
 namespace Banking.Infrastructure
 {
@@ -19,6 +20,8 @@ namespace Banking.Infrastructure
         {
             _connectionString = connectionString;
         }
+
+        public DbSet<Client> Clients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

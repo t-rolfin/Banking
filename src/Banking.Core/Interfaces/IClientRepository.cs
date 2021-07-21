@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Banking.Core.Interfaces
 {
-    public interface IClientRepository : IRepository<Client>
+
+    public interface IClientRepository : IAsyncRepository<Client>
+    { }
+
+
+    public interface IInMemoryClientRepository : IRepository<Client>
     {
         Client GetByCNP(string cnp);
         void UpdatePIN(Client client);
