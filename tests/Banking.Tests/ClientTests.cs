@@ -18,11 +18,11 @@ namespace Banking.Tests
         [Fact]
         public void ShouldCreateAnAccount()
         {
-            AccountType accountType = new AccountType("Gold");
+            AccountType accountType = new AccountType("Gold", 2);
 
             _sut.CreateAccount(
             new Account(
-                    "1928489323845",
+                    Guid.NewGuid(),
                     "RO49AAAA1B31007593840000",
                     accountType,
                     CurrencyType.RON
@@ -45,11 +45,11 @@ namespace Banking.Tests
         [Fact]
         public  void ShouldSetAccoutIsClosedToTrueWheCallCloseAccount()
         {
-            AccountType accountType = new AccountType("Gold");
+            AccountType accountType = new AccountType("Gold", 2);
 
             _sut.CreateAccount(
             new Account(
-                    "1928489323845",
+                    Guid.NewGuid(),
                     "RO49AAAA1B31007593840000",
                     accountType,
                     CurrencyType.RON

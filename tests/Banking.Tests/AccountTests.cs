@@ -15,7 +15,7 @@ namespace Banking.Tests
         public AccountTests()
         {
             _sut = new Account(
-                "1940724273941",
+                Guid.NewGuid(),
                 "RO49AAAA1B31007593840000",
                 new BasicAccountType().GetAccountType(),
                 Shared.Enums.CurrencyType.RON
