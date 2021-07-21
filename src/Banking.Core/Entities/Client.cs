@@ -31,7 +31,7 @@ namespace Banking.Core.Entities
         }
 
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CNP { get; init; }
         public string PIN { get; set; }
         public string FirstName { get; init; }
@@ -45,7 +45,7 @@ namespace Banking.Core.Entities
             _accounts.Add(newAccount);
         }
 
-        public void CloseAccount(int accountId)
+        public void CloseAccount(Guid accountId)
         {
             var account = _accounts.Find(x => x.Id == accountId)
                 ?? throw new AccountNotFoundException("There is no account with specified ID.");

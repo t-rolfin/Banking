@@ -11,12 +11,11 @@ namespace Banking.Core.AccountTypeFactory
 {
     public class BasicAccountType : IAccountType
     {
-
         public AccountTypeEnum AccountType { get; } = AccountTypeEnum.Basic;
 
         public AccountType GetAccountType()
         {
-            var basicAccount = new AccountType("Basic");
+            var basicAccount = new AccountType("Basic", (int)AccountTypeEnum.Basic);
 
             basicAccount.AddOperation(
                     OperationType.Withdrawal,

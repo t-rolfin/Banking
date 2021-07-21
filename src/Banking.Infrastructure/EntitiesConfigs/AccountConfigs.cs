@@ -17,8 +17,6 @@ namespace Banking.Infrastructure.EntitiesConfigs
             builder.ToTable("accounts")
                 .HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
             builder.Ignore(x => x.AccountType);
 
             builder.Property<AccountTypeEnum>("AccType");

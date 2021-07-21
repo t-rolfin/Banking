@@ -7,6 +7,7 @@ using Banking.Core.AccountTypeFactory;
 using Banking.Core.Interfaces;
 using Banking.Core.Repositories;
 using Banking.Infrastructure;
+using Banking.Infrastructure.Repositories;
 using Banking.Shared.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -49,7 +50,7 @@ namespace Banking.WebUI
 
 
             services.AddTransient<IFacade, Facade>();
-            services.AddSingleton<IClientRepository, InMemoryClientRepository>();
+            services.AddSingleton<IClientRepository, ClientRepository>();
             services.AddSingleton<AccountTypeProviderFactory>();
         }
 

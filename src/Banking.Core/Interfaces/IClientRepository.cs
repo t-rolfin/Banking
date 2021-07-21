@@ -9,7 +9,10 @@ namespace Banking.Core.Interfaces
 {
 
     public interface IClientRepository : IAsyncRepository<Client>
-    { }
+    {
+        Task<IReadOnlyList<Account>> GetClientAccountsById(int id);
+        Task<Client> GetClientByCNPAsync(string cnp);
+    }
 
 
     public interface IInMemoryClientRepository : IRepository<Client>

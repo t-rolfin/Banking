@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Banking.Core
@@ -28,13 +29,14 @@ namespace Banking.Core
             GenerateBankAccounts();
         }
 
-        public bool RegisterClient(string cnp, string pin, string firstName,
-            string lastName, string address, AccountTypeEnum accountType, CurrencyType currencyType)
+        public async Task<Client> RegisterClient(string cnp, string pin, string firstName,
+            string lastName, string address, AccountTypeEnum accountType, CurrencyType currencyType,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                if (_clientRepository.GetByCNP(cnp) is not null)
-                    return false;
+                if (await _clientRepository.GetClientByCNPAsync(cnp) is not null)
+                    return null;
 
                 var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
                 var IBAN = IBANGenerator.Generate();
@@ -47,21 +49,21 @@ namespace Banking.Core
                         new Account(client.Id, IBAN, _accountType, currencyType)
                     );
 
-                _clientRepository.Add(client);
+                await _clientRepository.CreateAsync(client, cancellationToken);
 
-                return true;
+                return client;
             }
             catch(Exception ex)
             {
-                return false;
+                return null;
             }
         }
 
-        public bool IdentifyClient(string cnp, string pin)
+        public async Task<bool> IdentifyClient(string cnp, string pin)
         {
             try
             {
-                var client = _clientRepository.GetByCNP(cnp);
+                var client = await _clientRepository.GetClientByCNPAsync(cnp);
 
                 if (client is null)
                     return false;
@@ -76,18 +78,20 @@ namespace Banking.Core
             }
         }
 
-        public void ChangeClientPIN(string cnp, string newPIN)
+        public async Task ChangeClientPIN(string cnp, string newPIN, CancellationToken cancellationToken = default)
         {
-            var client = _clientRepository.GetByCNP(cnp);
+            var client = await _clientRepository.GetClientByCNPAsync(cnp);
             var encryptedNewPIN = EncryptionManager.Encrypt(newPIN, _encryptionKey);
             client.ChangePIN(encryptedNewPIN);
+
+            await _clientRepository.UpdateAsync(client, cancellationToken);
         }
 
-        public void Withdrawal(string cnp, string iban, decimal value)
+        public async Task Withdrawal(string cnp, string iban, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
-                Account account = GetAccountForClient(cnp, iban);
+                Account account = await GetAccountForClient(cnp, iban);
 
                 decimal commission = account.Withdrawal(value);
 
@@ -100,47 +104,46 @@ namespace Banking.Core
             }
         }
 
-        public void Deposit(string cnp, string iban, decimal value)
+        public async Task Deposit(string cnp, string iban, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
-                Account account = GetAccountForClient(cnp, iban);
+                Account account = await GetAccountForClient(cnp, iban);
                 _cashAccount.Deposit(value);
                 decimal commission = account.Deposit(value);
                 _bankAccount.Deposit(commission);
             }
             catch
             {
-
                 throw;
             }
         }
 
-        public void CreateAccount(string cnp, AccountTypeEnum accountType, CurrencyType currencyType)
+        public async Task CreateAccount(string cnp, AccountTypeEnum accountType, CurrencyType currencyType, 
+            CancellationToken cancellationToken = default)
         {
             try
             {
                 var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
                 var IBAN = IBANGenerator.Generate();
 
-                var client = _clientRepository.GetByCNP(cnp);
+                var client = await _clientRepository.GetClientByCNPAsync(cnp);
 
                 client.CreateAccount(
                     new Account(client.Id, IBAN, _accountType, currencyType)
                     );
 
-                //TODO: update client
+                await _clientRepository.UpdateAsync(client, cancellationToken);
             }
             catch
             {
-
                 throw;
             }
         }
 
-        public List<Account> GetUserAccounts(string cnp)
+        public async Task<IReadOnlyList<Account>> GetUserAccounts(int id)
         {
-            return _clientRepository.GetClientAccounts(cnp);
+            return await _clientRepository.GetClientAccountsById(id);
         }
 
 
@@ -149,12 +152,12 @@ namespace Banking.Core
             var IBAN = IBANGenerator.Generate();
             var accountType = _accountTypeFactory.GetAccountTypeByType(AccountTypeEnum.Gold);
 
-            _bankAccount = new Account(123, IBAN, accountType, CurrencyType.RON);
-            _cashAccount = new Account(123, IBAN, accountType, CurrencyType.RON);
+            _bankAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
+            _cashAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
         }
-        Account GetAccountForClient(string cnp, string iban)
+        async Task<Account> GetAccountForClient(string cnp, string iban)
         {
-            var client = _clientRepository.GetByCNP(cnp);
+            var client = await _clientRepository.GetClientByCNPAsync(cnp);
             return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
         }
     }

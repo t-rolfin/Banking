@@ -27,7 +27,7 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div>@Context.User.Claims.ToList().First().Value</div>
+                        <div>@Context.User.Identity.Name</div>
 
                         <form method="post" asp-controller="Account" asp-action="LogOut">
                             <input type="submit" value="Logout" />

@@ -23,9 +23,9 @@ namespace Banking.WebUI.Controllers
         {
             var model = new AccountListModel(new List<AccountModel>());
 
-            var currentClientCNP = HttpContext.User.Claims.ToList().Find(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            var currentClientId = HttpContext.User.Claims.ToList().Find(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
-            var accounts = _facade.GetUserAccounts(currentClientCNP);
+            var accounts = await _facade.GetUserAccounts(int.Parse(currentClientId));
 
             foreach (var account in accounts)
             {

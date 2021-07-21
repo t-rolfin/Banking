@@ -19,10 +19,6 @@ namespace Banking.Infrastructure.EntitiesConfigs
             builder.Property(x => x.Id)
                 .ValueGeneratedOnAdd();
 
-            builder.HasOne(x => x.DestinationAccount)
-                .WithMany()
-                .HasForeignKey(x => x.Id);
-
             builder.HasOne(x => x.SourceAccount)
                 .WithMany(x => x.Transactions);
 

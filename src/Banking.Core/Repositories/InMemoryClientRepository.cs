@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Banking.Core.Repositories
 {
-    public class InMemoryClientRepository : IClientRepository
+    public class InMemoryClientRepository : IInMemoryClientRepository
     {
         List<Client> _clients;
 

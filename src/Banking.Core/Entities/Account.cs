@@ -13,8 +13,9 @@ namespace Banking.Core.Entities
 
         protected Account() { }
 
-        public Account(int clientId, string iban, AccountType accountType, CurrencyType currencyType)
+        public Account(Guid clientId, string iban, AccountType accountType, CurrencyType currencyType)
         {
+            Id = Guid.NewGuid();
             ClientId = Guard.Against.Null(clientId, nameof(clientId));
             IBAN = Guard.Against.InvalidInput(iban, nameof(iban), (x) => 
             {
@@ -27,8 +28,8 @@ namespace Banking.Core.Entities
             CurrencyType = Guard.Against.Null(currencyType, nameof(currencyType), "A currency type wasn't selected.");
         }
 
-        public int Id { get; }
-        public int ClientId { get; init; }
+        public Guid Id { get; }
+        public Guid ClientId { get; init; }
         public string IBAN { get; set; }
         public virtual AccountType AccountType { get; init; }
         public virtual CurrencyType CurrencyType { get; init; }

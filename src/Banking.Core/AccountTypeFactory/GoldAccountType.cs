@@ -15,7 +15,7 @@ namespace Banking.Core.AccountTypeFactory
 
         public AccountType GetAccountType()
         {
-            var goldAccount = new AccountType("Gold");
+            var goldAccount = new AccountType("Gold", (int)AccountTypeEnum.Gold);
 
             goldAccount.AddOperation(
                     OperationType.Withdrawal,

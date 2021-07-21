@@ -10,12 +10,14 @@ namespace Banking.Core.Entities
 {
     public class AccountType
     {
-        public AccountType(string name)
+        public AccountType(string name, int enumPosition)
         {
             Name = name;
+            EnumPosition = enumPosition;
         }
 
         public string Name { get; init; }
+        public int EnumPosition { get; set; }
         public bool HasCommisions { get; protected set; }
         public List<Operation> Operations { get; } = new();
 

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace Banking.WebUI.Controllers
 {
@@ -28,25 +29,26 @@ namespace Banking.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return View();
 
-            var result = _facade.RegisterClient(
+            var client = await _facade.RegisterClient(
                 model.CNP,
                 model.PIN,
                 model.FirstName,
                 model.LastName,
                 model.Address,
                 model.AccountType,
-                model.CurrencyType);
+                model.CurrencyType,
+                cancellationToken);
             
 
-            if (result)
+            if (client is not null)
             {
                 var claims = new[] {
-                        new Claim(ClaimTypes.NameIdentifier, model.CNP.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
                         new Claim(ClaimTypes.Name, model.FirstName),
                     };
 
@@ -81,7 +83,7 @@ namespace Banking.WebUI.Controllers
         {
             if(ModelState.IsValid)
             {
-                var result = _facade.IdentifyClient(model.CNP, model.PIN);
+                var result = await _facade.IdentifyClient(model.CNP, model.PIN);
                 
                 if(result)
                 {

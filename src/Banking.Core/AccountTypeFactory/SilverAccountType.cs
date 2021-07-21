@@ -15,7 +15,7 @@ namespace Banking.Core.AccountTypeFactory
 
         public AccountType GetAccountType()
         {
-            var silverAccount = new AccountType("Silver");
+            var silverAccount = new AccountType("Silver", (int)AccountTypeEnum.Silver);
 
             silverAccount.AddOperation(
                     OperationType.Withdrawal,

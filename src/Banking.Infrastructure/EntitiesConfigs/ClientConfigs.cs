@@ -16,8 +16,6 @@ namespace Banking.Infrastructure.EntitiesConfigs
             builder.ToTable("clients")
                 .HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
             builder.HasIndex(x => new { x.Id, x.CNP });
 
             builder.HasMany(x => x.Accounts)

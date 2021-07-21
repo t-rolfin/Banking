@@ -13,8 +13,8 @@ namespace Banking.Infrastructure.Repositories
 {
     public class ClientRepository : IClientRepository
     {
-
         private readonly ClientContext _context;
+
 
         public ClientRepository(ClientContext context)
         {
@@ -31,6 +31,11 @@ namespace Banking.Infrastructure.Repositories
 
                 if (entity is null || entity == default)
                     throw new ArgumentNullException();
+
+                foreach (var account in entity.Accounts)
+                {
+                    _context.Entry(account).Property("AccType").CurrentValue = account.AccountType.EnumPosition;
+                }
 
                 await _context.AddAsync(entity);
 
@@ -61,6 +66,12 @@ namespace Banking.Infrastructure.Repositories
                 throw;
             }
         }
+        public async Task<IReadOnlyList<Account>> GetClientAccountsById(int id)
+        {
+            var client = await GetByIdAsync(id);
+
+            return client.Accounts;
+        }
         public async Task<Client> GetByIdAsync(int id)
         {
             if (id <= 0)
@@ -69,11 +80,25 @@ namespace Banking.Infrastructure.Repositories
             var client = await _context.Clients.FindAsync(id);
             return client;
         }
+        public async Task<Client> GetClientByCNPAsync(string cnp)
+        {
+            try
+            {
+                var clients = _context.Clients.Where(x => x.CNP == cnp);
+
+                return clients.Count() == 0 ? null : await clients.FirstAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
 
         private bool CheckIfClientExistsByCNP(string cnp)
         {
             return _context.Clients.Any(x => x.CNP == cnp);
         }
+
     }
 }
