@@ -83,12 +83,12 @@ namespace Banking.WebUI.Controllers
         {
             if(ModelState.IsValid)
             {
-                var result = await _facade.IdentifyClient(model.CNP, model.PIN);
+                var client = await _facade.IdentifyClient(model.CNP, model.PIN);
                 
-                if(result)
+                if(client is not null)
                 {
                     var claims = new[] {
-                        new Claim(ClaimTypes.NameIdentifier, model.CNP.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
                         new Claim(ClaimTypes.Name, model.CNP),
                     };
 

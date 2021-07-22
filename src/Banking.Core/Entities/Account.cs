@@ -31,7 +31,7 @@ namespace Banking.Core.Entities
         public Guid Id { get; }
         public Guid ClientId { get; init; }
         public string IBAN { get; set; }
-        public virtual AccountType AccountType { get; init; }
+        public virtual AccountType AccountType { get; protected set; }
         public virtual CurrencyType CurrencyType { get; init; }
         public decimal Amount { get; protected set; }
         public bool IsClosed { get; protected set; }
@@ -39,6 +39,16 @@ namespace Banking.Core.Entities
         public virtual IReadOnlyList<Transaction> Transactions
             => _transactions.AsReadOnly();
 
+        public void SetAccountType(AccountType accountType)
+        {
+            if (accountType is null || accountType is default(AccountType))
+                throw new ArgumentNullException();
+
+            if (this.AccountType is null || this.AccountType is default(AccountType))
+                this.AccountType = accountType;
+            else
+                throw new AccountTypeCanNotBeSetException();
+        }
 
         public decimal Withdrawal(decimal withdrawalValue)
         {

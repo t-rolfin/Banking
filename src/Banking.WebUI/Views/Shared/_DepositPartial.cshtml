@@ -1,0 +1,11 @@
+﻿@model System.Guid
+
+<div id="to-be-replaced">
+    <h3>Deposit Value:</h3>
+    <form method="post" data-ajax="true"
+          onsubmit="NoEv(event)" data-ajax-url="/Client/Deposit" data-ajax-update="#editBid" data-ajax-loading="#loading" data-ajax-mode="replace">
+        <input type="hidden" name="accountId" value="@Model" />
+        <input type="number" name="value" value="" />
+        <button type="submit">Ok</button>
+    </form>
+</div>

@@ -1,7 +1,44 @@
-﻿@model Banking.Shared.Models.AccountListModel 
+﻿@model Banking.Shared.Models.AccountListModel
 
 @{
     ViewData["Title"] = "Client";
 }
 
+
 <partial name="_AccountListPartial" model="@Model" />
+
+
+
+@section Scripts{
+    <script>
+        function NoEv(e) {
+            e.preventDefault();
+        }
+
+        const typeOfAction = {
+            Withdrawal: 'Withdrawal',
+            Deposit: 'Deposit',
+            Transfer: 'Transfer'
+        };
+
+        function func(TypeOfAction, AccountId) {
+
+            var $detailDiv = $('#to-be-replaced');
+
+            switch (TypeOfAction) {
+                case typeOfAction.Withdrawal:
+                    $.get('/Client/Withdrawal', { accountId: AccountId }, function (data) {
+                        $detailDiv.replaceWith(data);
+                        console.log(data)
+                    });
+                    break;
+                case typeOfAction.Deposit:
+                    $.get('/Client/Deposit', { accountId: AccountId }, function (data) {
+                        $detailDiv.replaceWith(data);
+                    });
+                    break;
+            }
+        }
+
+    </script>
+}

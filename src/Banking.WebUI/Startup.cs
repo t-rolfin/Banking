@@ -48,9 +48,9 @@ namespace Banking.WebUI
                     x.LoginPath = "/Account/LogIn";
                 });
 
-
             services.AddTransient<IFacade, Facade>();
-            services.AddSingleton<IClientRepository, ClientRepository>();
+            services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<IQueryRepository, ClientQueryRepository>();
             services.AddSingleton<AccountTypeProviderFactory>();
         }
 

@@ -17,6 +17,7 @@ namespace Banking.Core.Entities
 
         public Client(string cnp, string pin, string firstName, string lastName, string address)
         {
+            Id = Guid.NewGuid();
             CNP = Guard.Against.InvalidFormat(cnp, nameof(cnp), "[0-9]{13}", "The length of CNP must be 13.");
             PIN = Guard.Against.NullOrWhiteSpace(pin, nameof(pin), "The PIN can't be empty!");
             FirstName = Guard.Against.NullOrWhiteSpace(firstName, nameof(firstName), "The field FirstName can't be empty!");

@@ -1,0 +1,11 @@
+﻿@model System.Guid
+
+<div id="to-be-replaced">
+    <h3>Withdrawal Value:</h3>
+    <form class="hide" method="post" asp-action="Withdrawal" asp-controller="Client" data-ajax="true"
+          onsubmit="NoEv(event)" data-ajax-url="/Client/Withdrawal" data-ajax-update="#editBid" data-ajax-loading="#loading" data-ajax-mode="replace">
+        <input type="hidden" name="accountId" value="@Model" />
+        <input type="number" name="value" value="" />
+        <button type="submit">Ok</button>
+    </form>
+</div>

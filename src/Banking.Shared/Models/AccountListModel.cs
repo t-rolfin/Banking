@@ -9,5 +9,11 @@ namespace Banking.Shared.Models
 {
     public record AccountListModel(List<AccountModel> Accounts) { }
 
-    public record AccountModel(decimal Amount, CurrencyType CurrencyType, string AccountType) { }
+    public class AccountModel
+    {
+        public Guid Id { get; set; }
+        public decimal Amount { get; set; }
+        public CurrencyType CurrencyType { get; set; }
+        public int AccType { get; set; }
+    }
 }

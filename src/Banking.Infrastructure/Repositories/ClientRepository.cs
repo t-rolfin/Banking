@@ -1,6 +1,8 @@
-﻿using Banking.Core.Entities;
+﻿using Banking.Core.AccountTypeFactory;
+using Banking.Core.Entities;
 using Banking.Core.Interfaces;
 using Banking.Infrastructure.Exceptions;
+using Banking.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,13 @@ namespace Banking.Infrastructure.Repositories
     public class ClientRepository : IClientRepository
     {
         private readonly ClientContext _context;
+        private readonly AccountTypeProviderFactory _accountTypeFactory;
 
 
-        public ClientRepository(ClientContext context)
+        public ClientRepository(ClientContext context, AccountTypeProviderFactory accountTypeFactory)
         {
             _context = context;
+            _accountTypeFactory = accountTypeFactory;
         }
 
 
@@ -66,18 +70,29 @@ namespace Banking.Infrastructure.Repositories
                 throw;
             }
         }
-        public async Task<IReadOnlyList<Account>> GetClientAccountsById(int id)
+        public async Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id)
         {
             var client = await GetByIdAsync(id);
 
             return client.Accounts;
         }
-        public async Task<Client> GetByIdAsync(int id)
+        public async Task<Client> GetByIdAsync(Guid id)
         {
-            if (id <= 0)
+            if (id == Guid.Empty)
                 throw new ArgumentOutOfRangeException();
 
             var client = await _context.Clients.FindAsync(id);
+
+            if (client is not null)
+            {
+                foreach (var account in client?.Accounts)
+                {
+                    int accountType = (int)_context.Entry(account).Property("AccType").CurrentValue;
+
+                    account.SetAccountType(_accountTypeFactory.GetAccountTypeByType((AccountTypeEnum)accountType));
+                }
+            }
+
             return client;
         }
         public async Task<Client> GetClientByCNPAsync(string cnp)
@@ -85,8 +100,19 @@ namespace Banking.Infrastructure.Repositories
             try
             {
                 var clients = _context.Clients.Where(x => x.CNP == cnp);
+                var client = clients.Count() == 0 ? null : await clients.FirstAsync();
 
-                return clients.Count() == 0 ? null : await clients.FirstAsync();
+                if(client is not null)
+                {
+                    foreach (var account in client?.Accounts)
+                    {
+                        int accountType = (int)_context.Entry(account).Property("AccType").CurrentValue;
+
+                        account.SetAccountType(_accountTypeFactory.GetAccountTypeByType((AccountTypeEnum)accountType));
+                    }
+                }
+
+                return client;
             }
             catch
             {
@@ -95,10 +121,10 @@ namespace Banking.Infrastructure.Repositories
         }
 
 
+
         private bool CheckIfClientExistsByCNP(string cnp)
         {
             return _context.Clients.Any(x => x.CNP == cnp);
         }
-
     }
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace Banking.Core.Interfaces
 {
 
-    public interface IClientRepository : IAsyncRepository<Client>
+    public interface IClientRepository : IAsyncRepository<Client, Guid>
     {
-        Task<IReadOnlyList<Account>> GetClientAccountsById(int id);
+        Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id);
         Task<Client> GetClientByCNPAsync(string cnp);
     }
 

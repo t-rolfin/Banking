@@ -59,18 +59,18 @@ namespace Banking.Core
             }
         }
 
-        public async Task<bool> IdentifyClient(string cnp, string pin)
+        public async Task<Client> IdentifyClient(string cnp, string pin)
         {
             try
             {
                 var client = await _clientRepository.GetClientByCNPAsync(cnp);
 
                 if (client is null)
-                    return false;
+                    return null;
 
                 var decryptedPIN = EncryptionManager.Decrypt(client.PIN, _encryptionKey);
 
-                return pin == decryptedPIN ? true : false;
+                return pin == decryptedPIN ? client : null;
             }
             catch (Exception ex)
             {
@@ -87,16 +87,19 @@ namespace Banking.Core
             await _clientRepository.UpdateAsync(client, cancellationToken);
         }
 
-        public async Task Withdrawal(string cnp, string iban, decimal value, CancellationToken cancellationToken = default)
+        public async Task Withdrawal(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
-                Account account = await GetAccountForClient(cnp, iban);
+                var client = await _clientRepository.GetByIdAsync(clientId);
+                var account = client?.Accounts.First(x => x.Id == accountId);
 
                 decimal commission = account.Withdrawal(value);
 
                 _cashAccount.Deposit(value);
                 _bankAccount.Deposit(commission);
+
+                await _clientRepository.UpdateAsync(client, cancellationToken);
             }
             catch
             {
@@ -104,14 +107,17 @@ namespace Banking.Core
             }
         }
 
-        public async Task Deposit(string cnp, string iban, decimal value, CancellationToken cancellationToken = default)
+        public async Task Deposit(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
-                Account account = await GetAccountForClient(cnp, iban);
+                var client = await _clientRepository.GetByIdAsync(clientId);
+                var account = client.Accounts.First(x => x.Id == accountId);
                 _cashAccount.Deposit(value);
                 decimal commission = account.Deposit(value);
                 _bankAccount.Deposit(commission);
+
+                await _clientRepository.UpdateAsync(client, cancellationToken);
             }
             catch
             {
@@ -141,7 +147,7 @@ namespace Banking.Core
             }
         }
 
-        public async Task<IReadOnlyList<Account>> GetUserAccounts(int id)
+        public async Task<IReadOnlyList<Account>> GetUserAccounts(Guid id)
         {
             return await _clientRepository.GetClientAccountsById(id);
         }

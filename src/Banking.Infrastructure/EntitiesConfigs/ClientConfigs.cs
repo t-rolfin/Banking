@@ -19,8 +19,7 @@ namespace Banking.Infrastructure.EntitiesConfigs
             builder.HasIndex(x => new { x.Id, x.CNP });
 
             builder.HasMany(x => x.Accounts)
-                .WithOne()
-                .HasForeignKey(x => x.Id);
+                .WithOne();
         }
     }
 }
