@@ -27,13 +27,18 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div>@Context.User.Identity.Name</div>
-
-                        <form method="post" asp-controller="Account" asp-action="LogOut">
-                            <input type="submit" value="Logout" />
-                        </form>
-
-                        <a asp-controller="Client" asp-action="Index">MyAccounts</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger dropdown-toggle bg-transparent border-0 text-dark" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @Context.User.Identity.Name
+                            </button>
+                            <div class="dropdown-menu">
+                                <a asp-controller="Client" asp-action="Index" class="dropdown-item">MyAccounts</a>
+                                <div class="dropdown-divider"></div>
+                                <form method="post" asp-controller="Account" asp-action="LogOut">
+                                    <input class="dropdown-item" type="submit" value="Logout" />
+                                </form>
+                            </div>
+                        </div>
                     }
                     else
                     {

@@ -49,7 +49,7 @@ namespace Banking.WebUI.Controllers
             {
                 var claims = new[] {
                         new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
-                        new Claim(ClaimTypes.Name, model.FirstName),
+                        new Claim(ClaimTypes.Name, client.GetFullName()),
                     };
 
                 var identity = new ClaimsIdentity(claims, "LogIn");
@@ -89,7 +89,7 @@ namespace Banking.WebUI.Controllers
                 {
                     var claims = new[] {
                         new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
-                        new Claim(ClaimTypes.Name, model.CNP),
+                        new Claim(ClaimTypes.Name, client.GetFullName()),
                     };
 
                     var identity = new ClaimsIdentity(claims, "LogIn");

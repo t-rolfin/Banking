@@ -60,5 +60,9 @@ namespace Banking.Core.Entities
             this.PIN = newPIN;
         }
 
+        public string GetFullName()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }
