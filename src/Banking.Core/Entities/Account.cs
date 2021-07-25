@@ -75,6 +75,17 @@ namespace Banking.Core.Entities
             else
             {
                 this.Amount -= withdrawalValue;
+
+                _transactions.Add(
+                    new Transaction(
+                            withdrawalValue,
+                            this,
+                            null,
+                            OperationType.Withdrawal,
+                            this.CurrencyType
+                        )
+                );
+
                 return 0;
             }
         }
@@ -101,6 +112,17 @@ namespace Banking.Core.Entities
             else
             {
                 this.Amount += depositedValue;
+
+                _transactions.Add(
+                    new Transaction(
+                            depositedValue,
+                            null,
+                            this,
+                            OperationType.Deposit,
+                            this.CurrencyType
+                        )
+                );
+
                 return 0;
             }
         }

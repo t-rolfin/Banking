@@ -10,7 +10,6 @@ namespace Banking.Core.Entities
 {
     public class Transaction
     {
-
         protected Transaction() { }
 
         public Transaction(decimal amount, Account sourceAccount, Account destinationAccount, 
@@ -21,6 +20,7 @@ namespace Banking.Core.Entities
             DestinationAccount = destinationAccount;
             TransactionType = transactionType;
             CurrencyType = currencyType;
+            Date = DateTime.UtcNow;
         }
 
         public int Id { get; set; }
