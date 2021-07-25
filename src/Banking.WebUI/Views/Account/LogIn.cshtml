@@ -1,27 +1,42 @@
-﻿@model Banking.Shared.Models.LogInModel
-
-@{
+﻿@{
     ViewData["Title"] = "LogIn";
 }
 
 <div class="container w-50 border m-auto p-3 rounded">
     <h1>LogIn</h1>
     <hr />
-    <form asp-action="LogIn" asp-controller="Account" method="post" asp-route-returnurl="@ViewBag.ReturnUrl">
-
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <input asp-for="CNP" class="form-control" placeholder="CNP" />
-            <span asp-validation-for="CNP" class="text-danger"></span>
-        </div>
-
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <input type="password" asp-for="PIN" class="form-control" placeholder="PIN" />
-            <span asp-validation-for="PIN" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">LogIn</button>
-    </form>
+    <div class="row justify-content-around" >
+        <a href="#" style="text-decoration: none" onclick="func(LoginType.Client)">Client</a>
+        <a href="#" style="text-decoration: none" onclick="func(LoginType.Operator)">Operator</a>
+    </div>
+    <hr />
+    <partial name="_LogInClientPartial" />
 </div>
 
+@section Scripts {
+    <script>
+        const LoginType = {
+            Client: 'Client',
+            Operator: 'Operator'
+        };
+
+        function func(loginType) {
+
+            var $detailDiv = $('#login-replace');
+
+            switch (loginType) {
+                case LoginType.Operator:
+                    $.get('/Account/OperatorLogIn', function (data) {
+                        $detailDiv.replaceWith(data);
+                        console.log(data)
+                    });
+                    break;
+                case LoginType.Client:
+                    $.get('/Account/ClientLogIn', function (data) {
+                        $detailDiv.replaceWith(data);
+                    });
+                    break;
+            }
+        }
+    </script>
+}

@@ -102,5 +102,29 @@ namespace Banking.WebUI.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult OperatorLogIn(OperatorLoginModel model, string returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public IActionResult ClientLogIn()
+        {
+            return PartialView("_LogInClientPartial", new LogInModel(null, null));
+        }
+
+        public IActionResult OperatorLogIn()
+        {
+            return PartialView("_LogInOperatorPartial", new OperatorLoginModel());
+        }
     }
 }

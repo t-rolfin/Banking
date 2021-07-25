@@ -1,0 +1,19 @@
+﻿@model Banking.Shared.Models.OperatorLoginModel
+
+
+<form asp-action="OperatorLogIn" asp-controller="Account" method="post" asp-route-returnurl="@ViewBag.ReturnUrl" id="login-replace">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input asp-for="EmployeeId" class="form-control" placeholder="Employee ID" />
+        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">LogIn</button>
+</form>
