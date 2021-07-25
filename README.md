@@ -3,7 +3,7 @@ Banking Application.
 
 # Obiective
 
-### Simularea inrolarii unui client.
+### Simularea inrolarii unui client. ✔️
 #
 ###  Simularea unui meniu de bancomat cu urmatoarele optiuni:
 - [x]	Introducere CNP pentru identificare user si PIN pentru autentificare
