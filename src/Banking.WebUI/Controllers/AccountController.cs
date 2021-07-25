@@ -9,16 +9,19 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using Banking.Infrastructure.Services;
 
 namespace Banking.WebUI.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IFacade _facade;
+        private readonly IOperatorService _operatorService;
 
-        public AccountController(IFacade facade)
+        public AccountController(IFacade facade, IOperatorService operatorService)
         {
             _facade = facade ?? throw new ArgumentNullException();
+            _operatorService = operatorService ?? throw new ArgumentNullException();
         }
 
         [HttpGet]
@@ -105,10 +108,27 @@ namespace Banking.WebUI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult OperatorLogIn(OperatorLoginModel model, string returnUrl = null)
+        public async Task<IActionResult> OperatorLogIn(OperatorLoginModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
+                var operatorDetails = _operatorService.IdentifyOperator(model.EmployeeId, model.Password);
+
+                if (operatorDetails is not null)
+                {
+                    var claims = new[] {
+                        new Claim(ClaimTypes.NameIdentifier, operatorDetails.Id.ToString()),
+                        new Claim(ClaimTypes.Name, operatorDetails.FullName),
+                        new Claim(ClaimTypes.Role, operatorDetails.Role)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, "OperatorLogIn");
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+                    return string.IsNullOrWhiteSpace(returnUrl) ? RedirectPermanent("/") : RedirectPermanent(returnUrl);
+                }
+
                 return View();
             }
             else

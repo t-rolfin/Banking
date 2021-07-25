@@ -32,7 +32,14 @@
                                 @Context.User.Identity.Name
                             </button>
                             <div class="dropdown-menu">
-                                <a asp-controller="Client" asp-action="Index" class="dropdown-item">MyAccounts</a>
+                                @if (User.IsInRole("Operator"))
+                                {
+                                    <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Client" asp-action="Index" class="dropdown-item">MyAccounts</a>
+                                }
                                 <div class="dropdown-divider"></div>
                                 <form method="post" asp-controller="Account" asp-action="LogOut">
                                     <input class="dropdown-item" type="submit" value="Logout" />

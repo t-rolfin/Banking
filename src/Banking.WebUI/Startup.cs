@@ -8,9 +8,12 @@ using Banking.Core.Interfaces;
 using Banking.Core.Repositories;
 using Banking.Infrastructure;
 using Banking.Infrastructure.Repositories;
+using Banking.Infrastructure.Services;
 using Banking.Shared.Helpers;
+using Banking.Shared.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,7 +32,6 @@ namespace Banking.WebUI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
@@ -48,13 +50,20 @@ namespace Banking.WebUI
                     x.LoginPath = "/Account/LogIn";
                 });
 
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("Operator", policy => policy.Requirements.Add(new HasRoleRequirement("Operator")));
+            });
+
             services.AddTransient<IFacade, Facade>();
             services.AddTransient<IClientRepository, ClientRepository>();
             services.AddTransient<IQueryRepository, ClientQueryRepository>();
+
+            services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
             services.AddSingleton<AccountTypeProviderFactory>();
+            services.AddSingleton<IOperatorService, OperatorService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -64,7 +73,6 @@ namespace Banking.WebUI
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
