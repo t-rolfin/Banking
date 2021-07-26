@@ -3,13 +3,13 @@ Banking Application.
 
 # Obiective
 
-### Simularea inrolarii unui client.
+### Simularea inrolarii unui client. ✔️
 #
 ###  Simularea unui meniu de bancomat cu urmatoarele optiuni:
-- [ ]	Introducere CNP pentru identificare user si PIN pentru autentificare
-- [ ]	Verifica sold (afisare pentru toate conturile utilizatorului)
-- [ ]	Retragere numerar
-- [ ]	Depunere Numerar
+- [x]	Introducere CNP pentru identificare user si PIN pentru autentificare
+- [x]	Verifica sold (afisare pentru toate conturile utilizatorului)
+- [x]	Retragere numerar
+- [x]	Depunere Numerar
 - [ ]	Schimbare PIN
 #
 ###	Simularea unui meniu pentru un operator bancar cu urmatoarele optiuni:
@@ -21,11 +21,11 @@ Banking Application.
 
 # Cerinte tehnice
 
-- [ ]	Modelul de date (Class Library)
+- [x]	Modelul de date (Class Library)
 - [ ]	Meniu (Console Application)
 - [ ]	Implementare operatii bancare(datele se vor stoca in memorie)
-- [ ]	Utilizare baza de date MSSQL pentru stocarea datelor(se poate folosi EntityFramework sau/si SqlConnection)
-- [ ]	Inlocuire Console App cu Desktop App (WPF) sau Web Application(ASP MVC sau .Net Core)
+- [x]	Utilizare baza de date MSSQL pentru stocarea datelor(se poate folosi EntityFramework sau/si SqlConnection)
+- [x]	Inlocuire Console App cu Desktop App (WPF) sau Web Application(ASP MVC sau .Net Core)
 - [ ]	Implemetarea unui serviciu WCF sau WebApi pentru expunerea publica a metodelor de interactiune cu baza de date
 
 # License
