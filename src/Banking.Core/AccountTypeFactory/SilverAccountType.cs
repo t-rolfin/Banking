@@ -1,5 +1,4 @@
 ﻿using Banking.Core.Entities;
-using Banking.Core.Enums;
 using Banking.Shared.Enums;
 using System;
 using System.Collections.Generic;

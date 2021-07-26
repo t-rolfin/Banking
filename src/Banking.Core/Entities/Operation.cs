@@ -1,4 +1,4 @@
-﻿using Banking.Core.Enums;
+﻿using Banking.Shared.Enums;
 
 namespace Banking.Core.Entities
 {

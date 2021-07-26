@@ -12,7 +12,6 @@ namespace Banking.Infrastructure.Repositories
 {
     public class ClientQueryRepository : IQueryRepository
     {
-
         readonly ConnectionString _connectionString;
 
         public ClientQueryRepository(ConnectionString connectionString)
@@ -20,9 +19,17 @@ namespace Banking.Infrastructure.Repositories
             _connectionString = connectionString;
         }
 
-        public Task<TransactionListModel> GetAccountTransactions(Guid accountId)
+        public async Task<TransactionListModel> GetAccountTransactions(Guid accountId)
         {
-            throw new NotImplementedException();
+            string query = $"SELECT * FROM transactions WHERE SourceAccountId = '{ accountId }'";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<TransactionModel>(query);
+
+            return new TransactionListModel(result);
         }
 
         public async Task<AccountListModel> GetClientAccounts(Guid clientId)

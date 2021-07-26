@@ -28,6 +28,19 @@ namespace Banking.WebUI.Controllers
             return View(result.ToList());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Client(Guid id)
+        {
+            ViewData["clientId"] = id;
+            var accounts = await _queryRepository.GetClientAccounts(id);
+            return View(accounts);
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Transactions(Guid accountId)
+        {
+            var transactions = await _queryRepository.GetAccountTransactions(accountId);
+            return View(transactions);
+        }
     }
 }

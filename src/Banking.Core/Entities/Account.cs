@@ -2,7 +2,6 @@
 using Banking.Core.Exceptions;
 using Banking.Shared.Enums;
 using Ardalis.GuardClauses;
-using Banking.Core.Enums;
 using System;
 
 namespace Banking.Core.Entities

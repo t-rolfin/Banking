@@ -14,7 +14,7 @@
         @foreach (var client in Model)
         {
             <tr>
-                <th scope="row">@client.Id.ToString().Split("-").First()</th>
+                <th scope="row"><a asp-action="Client" asp-controller="Dashboard" asp-route-id="@client.Id">@client.Id.ToString().Split("-").First()</a></th>
                 <td>@client.CNP</td>
                 <td>@client.FullName</td>
                 <td>@client.Address</td>

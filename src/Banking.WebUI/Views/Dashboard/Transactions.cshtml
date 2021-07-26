@@ -1,0 +1,45 @@
+﻿@model Banking.Shared.Models.TransactionListModel
+
+@using Banking.Shared.Enums
+
+<div class="container w-100 m-3 rounded align-items-center border p-2">
+    <input type="text" name="daterange" class="p-1"  value="@DateTime.Now.ToShortDateString() - @DateTime.Now.AddDays(30).ToShortDateString()" />
+</div>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col"><input type="checkbox" name="name" value="" /></th>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Destination Account</th>
+            <th scope="col">Transaction Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <tr>
+                <th scope="col"><input type="checkbox" name="name" value="" /></th>
+                <th scope="row">@transaction.Id.ToString().Split("-").First()</th>
+                <td>@transaction.Date.ToShortDateString()</td>
+                <td>@transaction.Amount @transaction.CurrencyType</td>
+                <td>@(transaction.DestinationAccountId == Guid.Empty ? "" : transaction.DestinationAccountId)</td>
+                <td>@((OperationType)transaction.TransactionType)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{ 
+        <script type="text/javascript">
+            $(function () {
+                $('input[name="daterange"]').daterangepicker({
+                    opens: 'left'
+                }, function (start, end, label) {
+                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                });
+            });
+    </script>
+}

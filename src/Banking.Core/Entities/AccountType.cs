@@ -1,5 +1,5 @@
 ﻿using Ardalis.GuardClauses;
-using Banking.Core.Enums;
+using Banking.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

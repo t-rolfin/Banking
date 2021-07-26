@@ -1,4 +1,4 @@
-﻿namespace Banking.Core.Enums
+﻿namespace Banking.Shared.Enums
 {
     public enum OperationType
     {
