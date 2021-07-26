@@ -11,5 +11,6 @@ namespace Banking.Infrastructure.Repositories
     {
         Task<AccountListModel> GetClientAccounts(Guid clientId);
         Task<TransactionListModel> GetAccountTransactions(Guid accountId);
+        Task<IEnumerable<ClientModel>> GetClients();
     }
 }

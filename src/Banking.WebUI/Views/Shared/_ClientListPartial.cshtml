@@ -1,0 +1,25 @@
+﻿@model ICollection<Banking.Shared.Models.ClientModel>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">CNP</th>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Total Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model)
+        {
+            <tr>
+                <th scope="row">@client.Id.ToString().Split("-").First()</th>
+                <td>@client.CNP</td>
+                <td>@client.FullName</td>
+                <td>@client.Address</td>
+                <td>@client.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>

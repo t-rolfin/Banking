@@ -36,5 +36,18 @@ namespace Banking.Infrastructure.Repositories
 
             return new AccountListModel(result.ToList());
         }
+
+        public async Task<IEnumerable<ClientModel>> GetClients()
+        {
+            string query = "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+                "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts GROUP BY ClientId) A ON C.Id = A.ClientId";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<ClientModel>(query);
+
+            return result;
+        }
     }
 }

@@ -1,5 +1,9 @@
-﻿@{ 
+﻿@model ICollection<Banking.Shared.Models.ClientModel>
+
+@{
     ViewData["Title"] = "Operator";
 }
 
 <h1>Welcome Mr. Operator!</h1>
+
+<partial name="_ClientListPartial" model="Model" />
