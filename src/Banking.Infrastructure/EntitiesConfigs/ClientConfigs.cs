@@ -18,6 +18,8 @@ namespace Banking.Infrastructure.EntitiesConfigs
 
             builder.HasIndex(x => new { x.Id, x.CNP });
 
+            builder.Ignore(x => x.HasNewAccount);
+
             builder.HasMany(x => x.Accounts)
                 .WithOne();
         }

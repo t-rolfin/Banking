@@ -59,7 +59,18 @@ namespace Banking.Infrastructure.Repositories
                 if (entity is null || entity == default)
                     throw new ArgumentNullException();
 
-                _context.Entry(entity).State = EntityState.Modified;
+                if(entity.HasNewAccount)
+                {
+                    foreach(var account in entity.Accounts.Where(x => x.IsNew == true))
+                    {
+                        _context.Entry(account).State = EntityState.Added;
+                        _context.Entry(account).Property("AccType").CurrentValue = account.AccountType.EnumPosition;
+                    }
+                }
+                else
+                {
+                    _context.Entry(entity).State = EntityState.Modified;
+                }
 
                 var response = await _context.SaveChangesAsync(cancellationToken);
 

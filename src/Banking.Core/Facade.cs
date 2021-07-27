@@ -1,5 +1,6 @@
 ﻿using Banking.Core.AccountTypeFactory;
 using Banking.Core.Entities;
+using Banking.Core.Exceptions;
 using Banking.Core.Interfaces;
 using Banking.Shared.Enums;
 using Banking.Shared.Helpers;
@@ -152,6 +153,33 @@ namespace Banking.Core
             return await _clientRepository.GetClientAccountsById(id);
         }
 
+        async Task<Account> GetAccountForClient(string cnp, string iban)
+        {
+            var client = await _clientRepository.GetClientByCNPAsync(cnp);
+            return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
+        }
+
+        public async Task<Account> CreateAccountFor(Guid clientId, AccountTypeEnum accountTypeEnum, CurrencyType currencyType, CancellationToken cancellationToken)
+        {
+            Client client = await _clientRepository.GetByIdAsync(clientId);
+
+            if (client is not null)
+            {
+                string iban = IBANGenerator.Generate();
+                AccountType accountType = _accountTypeFactory.GetAccountTypeByType(accountTypeEnum);
+                var account = new Account(clientId, iban, accountType, currencyType);
+                client.CreateAccount(account);
+
+                var response = await _clientRepository.UpdateAsync(client, cancellationToken);
+
+                return response ? account : null;
+            }
+            else
+            {
+                throw new ClientNotFoundException();
+            }
+
+        }
 
         void GenerateBankAccounts()
         {
@@ -160,11 +188,6 @@ namespace Banking.Core
 
             _bankAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
             _cashAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
-        }
-        async Task<Account> GetAccountForClient(string cnp, string iban)
-        {
-            var client = await _clientRepository.GetClientByCNPAsync(cnp);
-            return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
         }
     }
 }

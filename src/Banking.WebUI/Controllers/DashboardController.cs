@@ -1,10 +1,13 @@
-﻿using Banking.Infrastructure.Repositories;
+﻿using Banking.Core;
+using Banking.Core.Entities;
+using Banking.Infrastructure.Repositories;
 using Banking.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Banking.WebUI.Controllers
@@ -14,10 +17,12 @@ namespace Banking.WebUI.Controllers
     {
 
         private readonly IQueryRepository _queryRepository;
+        private readonly IFacade _facade;
 
-        public DashboardController(IQueryRepository queryRepository)
+        public DashboardController(IQueryRepository queryRepository, IFacade facade)
         {
             _queryRepository = queryRepository;
+            _facade = facade;
         }
 
         [HttpGet]
@@ -31,8 +36,8 @@ namespace Banking.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Client(Guid id)
         {
-            ViewData["clientId"] = id;
             var accounts = await _queryRepository.GetClientAccounts(id);
+            accounts.ClientId = id;
             return View(accounts);
         }
 
@@ -41,6 +46,14 @@ namespace Banking.WebUI.Controllers
         {
             var transactions = await _queryRepository.GetAccountTransactions(accountId);
             return View(transactions);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAccount(CreateAccountModel model, CancellationToken cancellationToken)
+        {
+            await _facade.CreateAccountFor(model.ClientId, model.AccountType, model.CurrencyType, cancellationToken);
+
+            return RedirectPermanent($"Client/{model.ClientId}");
         }
     }
 }

@@ -1,3 +1,12 @@
 ﻿@model Banking.Shared.Models.AccountListModel
 
 <partial name="_AccountListPartial" model="Model" />
+
+@section Scripts{
+    <script>
+        function select(name, containerClass) {
+            $('' + containerClass + ' > input[type=radio]').attr('checked', false);
+            $(name).attr('checked', true);
+        }
+    </script>
+}
