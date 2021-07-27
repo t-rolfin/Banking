@@ -97,14 +97,9 @@
 </form>
 
 @section Scripts{
-
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
     <script>
         function select(name, containerClass) {
-
             $('' + containerClass + ' > input[type=radio]').attr('checked', false);
-
             $(name).attr('checked', true);
         }
     </script>

@@ -7,7 +7,7 @@
 <div class="container row justify-content-center" id="editBid">
     @if (User.IsInRole("Operator"))
     {
-        <partial name="_CreateAccountPartial" model="new CreateAccountModel() { ClientId = Guid.NewGuid() }" />
+        <partial name="_CreateAccountPartial" model="new CreateAccountModel() { ClientId = Model.ClientId }" />
     }
 
     @if (Model.Accounts is not null)
