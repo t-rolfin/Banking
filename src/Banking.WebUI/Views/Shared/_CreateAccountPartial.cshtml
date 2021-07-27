@@ -21,7 +21,8 @@
             </div>
             <div class="modal-body">
                 <div class="col">
-                    <form id="account-creation" asp-controller="Dashboard" asp-action="CreateAccount" method="post">
+                    <form id="account-creation" asp-controller="Dashboard" asp-action="CreateAccount" method="post"
+                          data-ajax="true" data-ajax-update="#editBid">
                         <input type="hidden" name="ClientId" asp-for="ClientId" value="@Model.ClientId" />
                         <div class="form-group justify-content-center align-content-center border rounded p-2">
                             <h3 class="m-2 p-0">Account Type</h3>

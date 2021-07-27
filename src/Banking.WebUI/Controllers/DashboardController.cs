@@ -49,13 +49,11 @@ namespace Banking.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task CreateAccount(CreateAccountModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateAccount(CreateAccountModel model, CancellationToken cancellationToken)
         {
-            if(ModelState.IsValid)
-            {
-                Account account = await _facade
-                    .CreateAccountFor(model.ClientId, model.AccountType, model.CurrencyType, cancellationToken);
-            }
+            await _facade.CreateAccountFor(model.ClientId, model.AccountType, model.CurrencyType, cancellationToken);
+
+            return RedirectPermanent($"Client/{model.ClientId}");
         }
     }
 }
