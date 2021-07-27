@@ -16,6 +16,7 @@ namespace Banking.Core
             string lastName, string address, AccountTypeEnum accountType, CurrencyType currencyType, CancellationToken cancellationToken = default);
         Task Withdrawal(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken);
         Task<Account> CreateAccountFor(Guid clientId, AccountTypeEnum accountType, CurrencyType currencyType, CancellationToken cancellationToken);
+        Task<bool> CloseAccount(Guid clientId, Guid accountId, CancellationToken cancellationToken);
         Task<IReadOnlyList<Account>> GetUserAccounts(Guid id);
     }
 }

@@ -180,6 +180,27 @@ namespace Banking.Core
             }
 
         }
+        public async Task<bool> CloseAccount(Guid clientId, Guid accountId, CancellationToken cancellationToken)
+        {
+            var client = await _clientRepository.GetByIdAsync(clientId);
+
+            if (client is not null)
+            {
+                try
+                {
+                    client.CloseAccount(accountId);
+                    await _clientRepository.UpdateAsync(client, cancellationToken);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
 
         void GenerateBankAccounts()
         {

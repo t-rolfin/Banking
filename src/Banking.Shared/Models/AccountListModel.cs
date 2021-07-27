@@ -15,7 +15,7 @@ namespace Banking.Shared.Models
         }
         public AccountListModel(List<AccountModel> accounts)
         {
-            this.Accounts = accounts;
+            Accounts = accounts;
         }
         public AccountListModel(Guid clientId, List<AccountModel> accounts)
         {

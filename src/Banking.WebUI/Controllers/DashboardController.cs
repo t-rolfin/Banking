@@ -1,5 +1,4 @@
 ﻿using Banking.Core;
-using Banking.Core.Entities;
 using Banking.Infrastructure.Repositories;
 using Banking.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +14,6 @@ namespace Banking.WebUI.Controllers
     [Authorize(Policy = "Operator")]
     public class DashboardController : Controller
     {
-
         private readonly IQueryRepository _queryRepository;
         private readonly IFacade _facade;
 
@@ -54,6 +52,14 @@ namespace Banking.WebUI.Controllers
             await _facade.CreateAccountFor(model.ClientId, model.AccountType, model.CurrencyType, cancellationToken);
 
             return RedirectPermanent($"Client/{model.ClientId}");
+        }
+        public async Task<IActionResult> CloseAccount(Guid accountId, Guid clientId, CancellationToken cancellationToken)
+        {
+            var response = await _facade.CloseAccount(clientId, accountId, cancellationToken);
+
+            var accounts = await _queryRepository.GetClientAccounts(clientId);
+
+            return PartialView("_AccountListPartial", accounts);
         }
     }
 }
