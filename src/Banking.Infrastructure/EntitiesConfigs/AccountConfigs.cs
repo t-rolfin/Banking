@@ -18,6 +18,7 @@ namespace Banking.Infrastructure.EntitiesConfigs
                 .HasKey(x => x.Id);
 
             builder.Ignore(x => x.AccountType);
+            builder.Ignore(x => x.IsNew);
 
             builder.Property<AccountTypeEnum>("AccType");
 

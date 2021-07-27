@@ -168,7 +168,7 @@ namespace Banking.Core
                 string iban = IBANGenerator.Generate();
                 AccountType accountType = _accountTypeFactory.GetAccountTypeByType(accountTypeEnum);
                 var account = new Account(clientId, iban, accountType, currencyType);
-                //client.CreateAccount(account);
+                client.CreateAccount(account);
 
                 var response = await _clientRepository.UpdateAsync(client, cancellationToken);
 

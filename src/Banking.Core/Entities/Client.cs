@@ -23,6 +23,7 @@ namespace Banking.Core.Entities
             FirstName = Guard.Against.NullOrWhiteSpace(firstName, nameof(firstName), "The field FirstName can't be empty!");
             LastName = Guard.Against.NullOrWhiteSpace(lastName, nameof(lastName), "The field LastName can't be empty!");
             Address = address;
+            HasNewAccount = true;
         }
 
         public Client(string cnp, string pin, string firstName, string lastName, string address, Account account)
@@ -38,12 +39,14 @@ namespace Banking.Core.Entities
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string Address { get; init; }
+        public bool HasNewAccount { get; protected set; }
         public virtual IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
 
 
         public void CreateAccount(Account newAccount)
         {
             _accounts.Add(newAccount);
+            HasNewAccount = true;
         }
 
         public void CloseAccount(Guid accountId)

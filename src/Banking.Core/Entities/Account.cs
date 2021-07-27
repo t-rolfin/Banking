@@ -25,6 +25,7 @@ namespace Banking.Core.Entities
             }, "Invalid IBAN! If this error occur contact support team.");
             AccountType = Guard.Against.Null(accountType, nameof(AccountType), "An account type must be provided.");
             CurrencyType = Guard.Against.Null(currencyType, nameof(currencyType), "A currency type wasn't selected.");
+            IsNew = true;
         }
 
         public Guid Id { get; }
@@ -34,6 +35,7 @@ namespace Banking.Core.Entities
         public virtual CurrencyType CurrencyType { get; init; }
         public decimal Amount { get; protected set; }
         public bool IsClosed { get; protected set; }
+        public bool IsNew { get; protected set; }
 
         public virtual IReadOnlyList<Transaction> Transactions
             => _transactions.AsReadOnly();
