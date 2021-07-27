@@ -152,6 +152,33 @@ namespace Banking.Core
             return await _clientRepository.GetClientAccountsById(id);
         }
 
+        async Task<Account> GetAccountForClient(string cnp, string iban)
+        {
+            var client = await _clientRepository.GetClientByCNPAsync(cnp);
+            return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
+        }
+
+        public async Task<bool> CloseAccount(Guid clientId, Guid accountId, CancellationToken cancellationToken)
+        {
+            var client = await _clientRepository.GetByIdAsync(clientId);
+
+            if (client is not null)
+            {
+                try
+                {
+                    client.CloseAccount(accountId);
+                    await _clientRepository.UpdateAsync(client, cancellationToken);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
 
         void GenerateBankAccounts()
         {
@@ -160,11 +187,6 @@ namespace Banking.Core
 
             _bankAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
             _cashAccount = new Account(Guid.NewGuid(), IBAN, accountType, CurrencyType.RON);
-        }
-        async Task<Account> GetAccountForClient(string cnp, string iban)
-        {
-            var client = await _clientRepository.GetClientByCNPAsync(cnp);
-            return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
         }
     }
 }

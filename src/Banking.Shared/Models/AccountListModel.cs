@@ -7,7 +7,25 @@ using System.Threading.Tasks;
 
 namespace Banking.Shared.Models
 {
-    public record AccountListModel(List<AccountModel> Accounts) { }
+    public class AccountListModel 
+    {
+        public AccountListModel()
+        {
+            Accounts = new();
+        }
+        public AccountListModel(List<AccountModel> accounts)
+        {
+            Accounts = accounts;
+        }
+        public AccountListModel(Guid clientId, List<AccountModel> accounts)
+        {
+            ClientId = clientId;
+            Accounts = accounts;
+        }
+
+        public Guid ClientId { get; set; }
+        public List<AccountModel> Accounts { get; set; }
+    }
 
     public class AccountModel
     {

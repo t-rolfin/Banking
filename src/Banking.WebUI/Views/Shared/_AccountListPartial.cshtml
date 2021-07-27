@@ -28,6 +28,15 @@
                             <a asp-action="Transactions" asp-controller="Dashboard"
                                asp-route-accountId="@account.Id">Transactions</a>
                         </li>
+
+                        <li class="list-group-item">
+                            <form asp-action="CloseAccount" asp-controller="Dashboard" data-ajax="true" 
+                                  data-ajax-confirm="Are you sure you want to close this account?" data-ajax-update="#editBid">
+                                <input type="hidden" name="accountId" value="@account.Id" />
+                                <input type="hidden" name="clientId" value="@Model.ClientId" />
+                                <button type="submit">Close Account</button>
+                            </form>
+                        </li>
                     }
                     else
                     {
