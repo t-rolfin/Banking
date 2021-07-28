@@ -27,7 +27,8 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var clientId = GetCurrentClientId();
-            return await GetAccountForCurrentClient(clientId);
+            var accounts = await _queryRepository.GetClientAccounts(clientId);
+            return View(accounts);
         }
 
         [HttpPost]
@@ -71,7 +72,7 @@ namespace Banking.WebUI.Controllers
         [HttpGet]
         public IActionResult Transfer(Guid accountId)
         {
-            return PartialView("_DepositPartial", accountId);
+            return PartialView("_TransferPartial", accountId);
         }
 
 
@@ -79,7 +80,7 @@ namespace Banking.WebUI.Controllers
         private async Task<IActionResult> GetAccountForCurrentClient(Guid clientId)
         {
             var accounts = await _queryRepository.GetClientAccounts(clientId);
-
+            accounts.ClientId = clientId;
             return PartialView("_AccountListPartial", accounts);
         }
         private Guid GetCurrentClientId()
