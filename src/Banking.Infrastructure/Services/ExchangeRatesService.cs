@@ -31,7 +31,7 @@ namespace Banking.Infrastructure.Services
             var client = _httpClient.CreateClient();
             client.BaseAddress = new Uri(_apiConfigs.Url);
 
-            var response = await client.GetAsync($"?amount=300&from={from}&to={to}");
+            var response = await client.GetAsync($"?amount={value}&from={from}&to={to}");
 
             var stringResponse = await response.Content.ReadAsStringAsync();
             var deserializedResponse = JsonConvert.DeserializeObject<ExchangeRatesResponse>(stringResponse);
