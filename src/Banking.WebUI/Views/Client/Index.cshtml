@@ -37,6 +37,11 @@
                         $detailDiv.replaceWith(data);
                     });
                     break;
+                case typeOfAction.Transfer:
+                    $.get('/Client/Transfer', { accountId: AccountId }, function (data) {
+                        $detailDiv.replaceWith(data);
+                    });
+                    break;
             }
         };
 

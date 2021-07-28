@@ -6,6 +6,7 @@ using Banking.Core;
 using Banking.Core.AccountTypeFactory;
 using Banking.Core.Interfaces;
 using Banking.Core.Repositories;
+using Banking.Core.Services;
 using Banking.Infrastructure;
 using Banking.Infrastructure.Repositories;
 using Banking.Infrastructure.Services;
@@ -41,8 +42,18 @@ namespace Banking.WebUI
                 return new ConnectionString(connectionString);
             });
 
+            services.AddSingleton(x => {
+                var exchangeConfigs = Configuration.GetSection("ExchangeRates").GetChildren();
+                return new ExchangeRatesConfigurations(
+                        exchangeConfigs.First(x => x.Key == "Url").Value,
+                        exchangeConfigs.First(x => x.Key == "AccessKey").Value
+                    );
+            });
+
             services.AddDbContext<ClientContext>();
             services.AddTransient<ClientContext>();
+
+            services.AddHttpClient();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(x =>
@@ -57,11 +68,14 @@ namespace Banking.WebUI
 
             services.AddTransient<IFacade, Facade>();
             services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IQueryRepository, ClientQueryRepository>();
+            services.AddTransient<IExchangeRatesService, ExchangeRatesService>();
 
-            services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
             services.AddSingleton<AccountTypeProviderFactory>();
             services.AddSingleton<IOperatorService, OperatorService>();
+            services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
