@@ -33,5 +33,6 @@ namespace Banking.Shared.Models
         public decimal Amount { get; set; }
         public CurrencyType CurrencyType { get; set; }
         public int AccType { get; set; }
+        public string IBAN { get; set; }
     }
 }

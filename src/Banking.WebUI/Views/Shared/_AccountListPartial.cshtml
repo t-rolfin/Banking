@@ -19,6 +19,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@((AccountTypeEnum)account.AccType)</h5>
                     <p class="card-text">Amount: @account.Amount @account.CurrencyType.ToString() </p>
+                    <p class="card-text">IBAN: @account.IBAN</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     @if (User.IsInRole("Operator"))
