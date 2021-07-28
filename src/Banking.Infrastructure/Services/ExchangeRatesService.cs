@@ -25,7 +25,7 @@ namespace Banking.Infrastructure.Services
 
         public async Task<decimal> ConvertMoneyAsync(CurrencyType from, CurrencyType to, decimal value)
         {
-            if (from == CurrencyType.RON)
+            if (from == to)
                 return value;
 
             var client = _httpClient.CreateClient();
