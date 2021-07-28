@@ -16,7 +16,7 @@ Banking Application.
 - [x]	Deschide cont bancar
 - [ ]	Afisare clienti bancari sortati dupa nume sau Sold total in conturi (doar afisarea clientilor ✔️)
 - [ ]	Inchidere cont client (partial)
-- [ ]	Transfer bancar pe baza de IBAN sau numar de telefon
+- [x]	Transfer bancar pe baza de IBAN sau numar de telefon
 - [ ]	Extragere raport tranzactii pentru un client intr-un interval de date intrudus de utilizator. Extrasul va fi exportat in format Word sau PDF. 
 
 # Cerinte tehnice
