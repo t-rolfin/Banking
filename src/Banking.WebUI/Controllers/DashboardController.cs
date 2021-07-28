@@ -42,6 +42,7 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> Transactions(Guid accountId)
         {
             var transactions = await _queryRepository.GetAccountTransactions(accountId);
+            transactions.AccountId = accountId;
             return View(transactions);
         }
 

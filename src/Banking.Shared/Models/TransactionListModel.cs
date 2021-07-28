@@ -15,6 +15,7 @@ namespace Banking.Shared.Models
             Transactions = transactions;
         }
 
+        public Guid AccountId { get; set; }
         public IEnumerable<TransactionModel> Transactions { get; set; }
     }
 
