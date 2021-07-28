@@ -18,15 +18,24 @@ namespace Banking.Core
         private static string _encryptionKey = "everythingissecure";
 
         private readonly IClientRepository _clientRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAccountService _accountService;
         private readonly AccountTypeProviderFactory _accountTypeFactory;
 
         private static Account _bankAccount;
         private static Account _cashAccount;
 
-        public Facade(IClientRepository clientRepository, AccountTypeProviderFactory accountTypeFactory)
+        public Facade(
+            IClientRepository 
+            clientRepository, 
+            AccountTypeProviderFactory accountTypeFactory, 
+            IAccountRepository accountRepository, 
+            IAccountService accountService)
         {
             _clientRepository = clientRepository ?? throw new ArgumentNullException($"clientRepository -> {nameof(Facade)}");
             _accountTypeFactory = accountTypeFactory ?? throw new ArgumentNullException($"accountTypeFactory -> {nameof(Facade)}");
+            _accountRepository = accountRepository ?? throw new ArgumentNullException($"accountRepository -> {nameof(Facade)}");
+            _accountService = accountService ?? throw new ArgumentNullException($"accountService -> {nameof(Facade)}");
             GenerateBankAccounts();
         }
 
@@ -86,6 +95,17 @@ namespace Banking.Core
             client.ChangePIN(encryptedNewPIN);
 
             await _clientRepository.UpdateAsync(client, cancellationToken);
+        }
+
+        public async Task Transfer(Guid accountId, string destinationIban, decimal value, CancellationToken cancellationToken)
+        {
+            var sourceAccount = await _accountRepository.GetById(accountId);
+            var destinationAccount = await _accountRepository.GetByIBAN(destinationIban);
+
+            var commission = await _accountService.Transfer(sourceAccount, destinationAccount, value);
+            _bankAccount.Deposit(commission);
+
+            await _accountRepository.UpdateAccountList(cancellationToken, sourceAccount, destinationAccount);
         }
 
         public async Task Withdrawal(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)

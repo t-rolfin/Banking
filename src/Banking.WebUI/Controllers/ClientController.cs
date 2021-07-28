@@ -26,39 +26,35 @@ namespace Banking.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var currentClientId = HttpContext.User.Claims.ToList().Find(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-            var accounts = await _queryRepository.GetClientAccounts(Guid.Parse(currentClientId));
-
+            var clientId = GetCurrentClientId();
+            var accounts = await _queryRepository.GetClientAccounts(clientId);
             return View(accounts);
         }
 
         [HttpPost]
         public async Task<IActionResult> Withdrawal(decimal value, Guid accountId, CancellationToken cancellationToken)
         {
-            var clientId = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-            await _facade.Withdrawal(Guid.Parse(clientId), accountId, value, cancellationToken);
-
-            var currentClientId = HttpContext.User.Claims.ToList().Find(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-            var accounts = await _queryRepository.GetClientAccounts(Guid.Parse(currentClientId));
-
-            return PartialView("_AccountListPartial", accounts);
+            var clientId = GetCurrentClientId();
+            await _facade.Withdrawal(clientId, accountId, value, cancellationToken);
+            return await GetAccountForCurrentClient(clientId);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Deposit(decimal value, Guid accountId, CancellationToken cancellationToken)
         {
-            var clientId = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            Guid clientId = GetCurrentClientId();
+            await _facade.Deposit(clientId, accountId, value, cancellationToken);
+            return await GetAccountForCurrentClient(clientId);
+        }
 
-            await _facade.Deposit(Guid.Parse(clientId), accountId, value, cancellationToken);
 
-            var currentClientId = HttpContext.User.Claims.ToList().Find(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-            var accounts = await _queryRepository.GetClientAccounts(Guid.Parse(currentClientId));
-
-            return PartialView("_AccountListPartial", accounts);
+        [HttpPost]
+        public async Task<IActionResult> Transfer(Guid accountId, string destinationAccountIBAN, decimal value, CancellationToken cancellationToken)
+        {
+            await _facade.Transfer(accountId, destinationAccountIBAN, value, cancellationToken);
+            var clientId = GetCurrentClientId();
+            return await GetAccountForCurrentClient(clientId);
         }
 
         [HttpGet]
@@ -73,5 +69,25 @@ namespace Banking.WebUI.Controllers
             return PartialView("_DepositPartial", accountId);
         }
 
+        [HttpGet]
+        public IActionResult Transfer(Guid accountId)
+        {
+            return PartialView("_TransferPartial", accountId);
+        }
+
+
+
+        private async Task<IActionResult> GetAccountForCurrentClient(Guid clientId)
+        {
+            var accounts = await _queryRepository.GetClientAccounts(clientId);
+            accounts.ClientId = clientId;
+            return PartialView("_AccountListPartial", accounts);
+        }
+        private Guid GetCurrentClientId()
+        {
+            var clientId = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            Guid clientIdAdGuid = Guid.Parse(clientId);
+            return clientIdAdGuid;
+        }
     }
 }

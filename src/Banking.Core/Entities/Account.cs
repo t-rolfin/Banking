@@ -33,12 +33,20 @@ namespace Banking.Core.Entities
         public string IBAN { get; set; }
         public virtual AccountType AccountType { get; protected set; }
         public virtual CurrencyType CurrencyType { get; init; }
-        public decimal Amount { get; protected set; }
+        public decimal Amount { get; set; }
         public bool IsClosed { get; protected set; }
         public bool IsNew { get; protected set; }
 
         public virtual IReadOnlyList<Transaction> Transactions
             => _transactions.AsReadOnly();
+
+        public void AddTransaction(Transaction transaction)
+        {
+            if (transaction is null || transaction == default)
+                throw new ArgumentNullException();
+
+            _transactions.Add(transaction);
+        }
 
         public void SetAccountType(AccountType accountType)
         {
@@ -140,7 +148,6 @@ namespace Banking.Core.Entities
                 .Commission;
 
             return value * (decimal)(commission.Percent / 100) + (decimal)commission.FixedValue;
-
         }
     }
 }

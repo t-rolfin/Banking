@@ -1,0 +1,21 @@
+﻿@model System.Guid
+
+<div id="to-be-replaced">
+    <form method="post" asp-action="Transfer" asp-controller="Client" data-ajax="true" id="form-to-submite"
+          onsubmit="NoEv(event)" data-ajax-url="/Client/Transfer" data-ajax-update="#editBid" data-ajax-loading="#loading" data-ajax-mode="replace">
+
+        <input type="hidden" name="accountId" value="@Model" />
+
+        <div class="form-group">
+            <label for="value-to-deposit">Value</label>
+            <input type="number" class="form-control" name="value" value="" id="value-to-deposit" />
+        </div>
+
+        <div class="form-group">
+            <label for="value-to-deposit">Destination Account IBAN</label>
+            <input type="text" class="form-control" name="destinationAccountIBAN" value="" id="value-to-deposit" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Transfer</button>
+    </form>
+</div> 

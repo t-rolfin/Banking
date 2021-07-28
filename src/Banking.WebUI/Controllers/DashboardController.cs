@@ -26,9 +26,8 @@ namespace Banking.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var result = await _queryRepository.GetClients();
-
-            return View(result.ToList());
+            var clients = await _queryRepository.GetClients();
+            return View(clients.ToList());
         }
 
         [HttpGet]
@@ -43,6 +42,7 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> Transactions(Guid accountId)
         {
             var transactions = await _queryRepository.GetAccountTransactions(accountId);
+            transactions.AccountId = accountId;
             return View(transactions);
         }
 
@@ -53,6 +53,7 @@ namespace Banking.WebUI.Controllers
 
             return RedirectPermanent($"Client/{model.ClientId}");
         }
+
         public async Task<IActionResult> CloseAccount(Guid accountId, Guid clientId, CancellationToken cancellationToken)
         {
             var response = await _facade.CloseAccount(clientId, accountId, cancellationToken);

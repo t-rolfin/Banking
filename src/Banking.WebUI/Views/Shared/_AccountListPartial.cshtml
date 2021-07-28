@@ -12,7 +12,6 @@
 
     @if (Model.Accounts is not null)
     {
-
         foreach (var account in Model.Accounts)
         {
             <div class="card m-3" style="width: 18rem;">
@@ -20,6 +19,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@((AccountTypeEnum)account.AccType)</h5>
                     <p class="card-text">Amount: @account.Amount @account.CurrencyType.ToString() </p>
+                    <p class="card-text">IBAN: @account.IBAN</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     @if (User.IsInRole("Operator"))
@@ -42,13 +42,16 @@
                     {
                         <li class="list-group-item">
                             <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
-                               onclick="func(typeOfAction.Withdrawal, '@account.Id.ToString()')">Withdrawal</a>
+                                onclick="func(typeOfAction.Withdrawal, '@account.Id.ToString()')">Withdrawal</a>
                         </li>
                         <li class="list-group-item">
                             <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
-                               onclick="func(typeOfAction.Deposit, '@account.Id.ToString()')">Deposit</a>
+                                onclick="func(typeOfAction.Deposit, '@account.Id.ToString()')">Deposit</a>
                         </li>
-                        <li class="list-group-item"><a class="btn btn-primary w-100" href="" onclick="alert('Transfer is not available!')">Transfer</a></li>
+                        <li class="list-group-item">
+                            <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
+                                onclick="func(typeOfAction.Transfer, '@account.Id.ToString()')">Transfer</a>
+                        </li>
                     }
 
                 </ul>

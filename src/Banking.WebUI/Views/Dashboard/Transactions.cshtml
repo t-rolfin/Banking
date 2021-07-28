@@ -25,7 +25,7 @@
                 <th scope="row">@transaction.Id.ToString().Split("-").First()</th>
                 <td>@transaction.Date.ToShortDateString()</td>
                 <td>@transaction.Amount @transaction.CurrencyType</td>
-                <td>@(transaction.DestinationAccountId == Guid.Empty ? "" : transaction.DestinationAccountId)</td>
+                <td>@(transaction.DestinationAccountId == Model.AccountId ? "this" : transaction.DestinationAccountId)</td>
                 <td>@((OperationType)transaction.TransactionType)</td>
             </tr>
         }

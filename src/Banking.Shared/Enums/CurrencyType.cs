@@ -9,6 +9,6 @@ namespace Banking.Shared.Enums
     public enum CurrencyType
     {
         RON = 0,
-        EURO = 1
+        EUR = 1
     }
 }
