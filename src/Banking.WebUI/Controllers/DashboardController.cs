@@ -1,10 +1,14 @@
 ﻿using Banking.Core;
 using Banking.Infrastructure.Repositories;
+using Banking.Infrastructure.Services;
 using Banking.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +20,13 @@ namespace Banking.WebUI.Controllers
     {
         private readonly IQueryRepository _queryRepository;
         private readonly IFacade _facade;
+        private readonly IFileExportService _fileExportService;
 
-        public DashboardController(IQueryRepository queryRepository, IFacade facade)
+        public DashboardController(IQueryRepository queryRepository, IFacade facade, IFileExportService fileExportService)
         {
             _queryRepository = queryRepository;
             _facade = facade;
+            _fileExportService = fileExportService;
         }
 
         [HttpGet]
@@ -44,6 +50,18 @@ namespace Banking.WebUI.Controllers
             var transactions = await _queryRepository.GetAccountTransactions(accountId);
             transactions.AccountId = accountId;
             return View(transactions);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionsAsPdf(Guid accountId)
+        {
+            var transactions = await _queryRepository.GetAccountTransactions(accountId);
+            var content = await _fileExportService.GetStreamFor(transactions.Transactions);
+            var contentType = "application/pdf";
+            var fileName = "extras_account.pdf";
+
+            return File(content, contentType, fileName);
         }
 
         [HttpPost]
