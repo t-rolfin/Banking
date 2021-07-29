@@ -1,0 +1,31 @@
+﻿@model Banking.Shared.Models.TransactionListModel
+
+@using Banking.Shared.Enums
+
+<div id="replaced-with-transactions">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col"><input type="checkbox" name="name" value="" /></th>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Destination Account</th>
+                <th scope="col">Transaction Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model.Transactions)
+            {
+                <tr>
+                    <th scope="col"><input type="checkbox" name="name" value="" /></th>
+                    <th scope="row">@transaction.Id.ToString().Split("-").First()</th>
+                    <td>@transaction.Date.ToShortDateString()</td>
+                    <td>@transaction.Amount @transaction.CurrencyType</td>
+                    <td>@(transaction.DestinationAccountId == Model.AccountId ? "this" : transaction.DestinationAccountId)</td>
+                    <td>@((OperationType)transaction.TransactionType)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -72,6 +72,7 @@ namespace Banking.WebUI
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IQueryRepository, ClientQueryRepository>();
             services.AddTransient<IExchangeRatesService, ExchangeRatesService>();
+            services.AddTransient<IFileExportService, FileExportService>();
 
             services.AddSingleton<AccountTypeProviderFactory>();
             services.AddSingleton<IOperatorService, OperatorService>();
