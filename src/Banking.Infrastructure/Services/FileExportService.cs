@@ -1,17 +1,13 @@
-﻿using Banking.Core.Entities;
-using Banking.Shared.Enums;
+﻿using System.Collections.Generic;
+using Syncfusion.Pdf.Graphics;
+using System.Threading.Tasks;
 using Banking.Shared.Models;
+using Banking.Shared.Enums;
+using Syncfusion.Pdf.Grid;
 using Syncfusion.Drawing;
 using Syncfusion.Pdf;
-using Syncfusion.Pdf.Grid;
-using Syncfusion.Pdf.Tables;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Banking.Infrastructure.Services
 {
@@ -19,60 +15,62 @@ namespace Banking.Infrastructure.Services
     {
         public async Task<byte[]> GetStreamFor(IEnumerable<TransactionModel> transactions)
         {
-            //Create a new PDF document.
+            PdfDocument pdfDocument = new PdfDocument();
+            PdfPage pdfPage = pdfDocument.Pages.Add();
 
-            PdfDocument doc = new PdfDocument();
+            PdfGraphics graphics = pdfPage.Graphics;
+            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 10);
+            PdfFont fontName = new PdfStandardFont(PdfFontFamily.Helvetica, 10, PdfFontStyle.Bold);
+            PdfFont fontHeader = new PdfStandardFont(PdfFontFamily.Helvetica, 24);
 
-            //Add a page.
+            graphics.DrawString("Extras Cont", fontHeader, PdfBrushes.Black, new PointF(200, 0));
 
-            PdfPage page = doc.Pages.Add();
-
-            // Create a PdfLightTable.
-
+            graphics.DrawString("Nume: ", fontName, PdfBrushes.Black, new PointF(0, 30));
+            graphics.DrawString("Adresa: ", font, PdfBrushes.Black, new PointF(0, 45));
+            graphics.DrawString("CNP: ", font, PdfBrushes.Black, new PointF(0, 60));
+            graphics.DrawString("Valuta: ", font, PdfBrushes.Black, new PointF(0, 75));
+            graphics.DrawString($"Data Extras: { DateTime.UtcNow.ToShortDateString() }", font, PdfBrushes.Black, new PointF(0, 90));
             PdfGrid pdfGrid = new PdfGrid();
 
-            // Initialize DataTable to assign as DateSource to the light table.
+            pdfGrid.Columns.Add(4);
+            pdfGrid.Headers.Add(1);
+            PdfGridRow pdfGridHeader = pdfGrid.Headers[0];
+            pdfGridHeader.Cells[0].Value = "Date";
+            pdfGridHeader.Cells[1].Value = "Destination";
+            pdfGridHeader.Cells[2].Value = "Transaction Type";
+            pdfGridHeader.Cells[3].Value = "Amount";
 
-            DataTable table = new DataTable();
+            pdfGridHeader.ApplyStyle(new PdfGridCellStyle() { 
+                BackgroundBrush = PdfBrushes.DarkBlue, 
+                Borders = new PdfBorders() { All = new PdfPen(Color.Transparent), Right = new PdfPen(Color.White, 3) },
+                TextBrush = PdfBrushes.White,
+                StringFormat = new PdfStringFormat(PdfTextAlignment.Center),
+                CellPadding = new PdfPaddings() { Top = 5, Bottom = 5 },
+                Font = new PdfStandardFont(PdfFontFamily.Helvetica, 12, PdfFontStyle.Bold)
+            });
 
-            //Include columns to the DataTable.
-
-            table.Columns.Add("Date");
-
-            table.Columns.Add("Transaction Type");
-
-            table.Columns.Add("Destination");
-
-            table.Columns.Add("Amount");
-
-
-            //Include rows to the DataTable.
             foreach (var transaction in transactions)
             {
-                table.Rows.Add(new string[] {
-                    transaction.Date.ToShortDateString(),
-                    ((OperationType)transaction.TransactionType).ToString(),
-                    transaction.DestinationAccountId.ToString(),
-                    transaction.Amount.ToString()
+                PdfGridRow pdfGridRow = pdfGrid.Rows.Add();
+                pdfGridRow.Cells[0].Value = transaction.Date.ToShortDateString();
+                pdfGridRow.Cells[1].Value = transaction.DestinationAccountId.ToString();
+                pdfGridRow.Cells[2].Value = ((OperationType)transaction.TransactionType).ToString();
+                pdfGridRow.Cells[3].Value = $"{transaction.Amount} {transaction.CurrencyType}";
+                pdfGridRow.Height = 30;
+
+                pdfGridRow.ApplyStyle(new PdfGridCellStyle()
+                {
+                    Borders = new PdfBorders() {  All = new PdfPen(Color.Transparent, 0) },
+                    StringFormat = new PdfStringFormat() { Alignment = PdfTextAlignment.Center},
+                    Font = new PdfStandardFont(PdfFontFamily.Helvetica, 10, PdfFontStyle.Bold)
                 });
             }
 
-            //Assign data source.
 
-            pdfGrid.DataSource = table;
-            pdfGrid.Style = new PdfGridStyle() { CellPadding = new PdfPaddings(5, 5, 5, 5) };
-            //Draw PdfLightTable.
-
-            pdfGrid.Draw(page, new PointF(0, 0));
-
-            //Save the document.
-
+            pdfGrid.Draw(pdfPage, new Point(0, 120));
             MemoryStream stream = new MemoryStream();
-            doc.Save(stream);
-
-            //Close the document
-
-            doc.Close(true);
+            pdfDocument.Save(stream);
+            pdfDocument.Close(true);
 
             return await Task.FromResult(stream.ToArray());
         }

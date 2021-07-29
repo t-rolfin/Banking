@@ -2,11 +2,11 @@
 
 @using Banking.Shared.Enums
 
-<div class="container w-100 mb-3 rounded justify-items-around align-items-center border p-2">
-    <form asp-controller="Dashboard" asp-action="GetTransactionsAsPdf" method="get" id="filter-form">
+<div class="container w-100 mb-3 rounded justify-content-around align-items-center border p-2">
+    <form asp-controller="Dashboard" asp-action="GetTransactionsAsPdf" method="get" id="filter-form" >
         <input type="hidden" name="accountId" value="@Model.AccountId" />
-        <input type="text" name="dateRange" id="filter-date" class="p-1"  style="width: 200px; text-align:center"
-               value="@DateTime.Now.ToShortDateString() - @DateTime.Now.AddDays(30).ToShortDateString()" />
+        <input type="text" name="dateRange" id="filter-date" class="p-1" style="width: 230px; text-align:center; font-size: 18px"
+               value="@DateTime.Now.Subtract(TimeSpan.FromDays(30)).ToShortDateString() - @DateTime.Now.ToShortDateString()" />
         <button type="submit" class="btn btn-primary">Export as PDF</button>
     </form>
 </div>
