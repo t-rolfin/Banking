@@ -32,6 +32,20 @@ namespace Banking.Infrastructure.Repositories
             return new TransactionListModel(result);
         }
 
+        public async Task<TransactionListModel> GetAccountTransactionsBetween(Guid accountId, DateTime startDate, DateTime endDate)
+        {
+            string query = $"SELECT * FROM transactions WHERE SourceAccountId = '{ accountId }' " +
+                $"AND Date BETWEEN '{startDate}' AND '{endDate}'";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<TransactionModel>(query);
+
+            return new TransactionListModel(result);
+        }
+
         public async Task<AccountListModel> GetClientAccounts(Guid clientId)
         {
             string query = $"SELECT * FROM accounts WHERE ClientId = @ClientId AND IsClosed = 0";
@@ -47,7 +61,7 @@ namespace Banking.Infrastructure.Repositories
         public async Task<IEnumerable<ClientModel>> GetClients()
         {
             string query = "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
-                "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts GROUP BY ClientId) A ON C.Id = A.ClientId";
+                "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId";
 
             using var connection = new SqlConnection(_connectionString.Value);
             await connection.OpenAsync();

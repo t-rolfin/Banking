@@ -52,11 +52,24 @@ namespace Banking.WebUI.Controllers
             return View(transactions);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> TransactionsByRangeTime(Guid accountId, DateTime startDate, DateTime endDate)
+        {
+            var transactions = await _queryRepository.GetAccountTransactionsBetween(accountId, startDate, endDate);
+            return PartialView("_TransactionListPartial", transactions);
+        }
+
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactionsAsPdf(Guid accountId)
+        public async Task<IActionResult> GetTransactionsAsPdf(Guid accountId, string dateRange)
         {
-            var transactions = await _queryRepository.GetAccountTransactions(accountId);
+            if (string.IsNullOrEmpty(dateRange))
+                return Json(new { });
+
+            List<DateTime> dates = new();
+            dateRange.Split("-").ToList().ForEach(x => dates.Add(DateTime.Parse(x)));
+
+            var transactions = await _queryRepository.GetAccountTransactionsBetween(accountId, dates.First(), dates.Last());
             var content = await _fileExportService.GetStreamFor(transactions.Transactions);
             var contentType = "application/pdf";
             var fileName = "extras_account.pdf";

@@ -3,44 +3,29 @@
 @using Banking.Shared.Enums
 
 <div class="container w-100 mb-3 rounded justify-items-around align-items-center border p-2">
-    <input type="text" name="daterange" class="p-1"  value="@DateTime.Now.ToShortDateString() - @DateTime.Now.AddDays(30).ToShortDateString()" />
-    <a class="btn btn-primary" asp-controller="Dashboard" asp-action="GetTransactionsAsPdf" asp-route-accountId="@Model.AccountId">Export as PDF</a>
+    <form asp-controller="Dashboard" asp-action="GetTransactionsAsPdf" method="get" id="filter-form">
+        <input type="hidden" name="accountId" value="@Model.AccountId" />
+        <input type="text" name="dateRange" id="filter-date" class="p-1"  style="width: 200px; text-align:center"
+               value="@DateTime.Now.ToShortDateString() - @DateTime.Now.AddDays(30).ToShortDateString()" />
+        <button type="submit" class="btn btn-primary">Export as PDF</button>
+    </form>
 </div>
 
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col"><input type="checkbox" name="name" value="" /></th>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Destination Account</th>
-            <th scope="col">Transaction Type</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var transaction in Model.Transactions)
-        {
-            <tr>
-                <th scope="col"><input type="checkbox" name="name" value="" /></th>
-                <th scope="row">@transaction.Id.ToString().Split("-").First()</th>
-                <td>@transaction.Date.ToShortDateString()</td>
-                <td>@transaction.Amount @transaction.CurrencyType</td>
-                <td>@(transaction.DestinationAccountId == Model.AccountId ? "this" : transaction.DestinationAccountId)</td>
-                <td>@((OperationType)transaction.TransactionType)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<partial name="_TransactionListPartial" model="@Model" />
 
 @section Scripts{ 
-        <script type="text/javascript">
-            $(function () {
-                $('input[name="daterange"]').daterangepicker({
-                    opens: 'left'
-                }, function (start, end, label) {
-                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                });
+    <script type="text/javascript">
+        $(function () {
+            $('input[name="dateRange"]').daterangepicker({
+                opens: 'right'
+            }, function (start, end, label) {
+                $.get("/Dashboard/TransactionsByRangeTime",
+                    { accountId: '@Model.AccountId', startDate: start.format('YYYY-MM-DD'), endDate: end.format('YYYY-MM-DD') },
+                    function (data) {
+                        $("#replaced-with-transactions").replaceWith(data);
+                    }
+                )
             });
+        });
     </script>
 }
