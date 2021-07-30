@@ -1,9 +1,6 @@
 ﻿<Application x:Class="Banking.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Banking.WPF"
-             StartupUri="/Views/LogInViewModel.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
+             xmlns:local="clr-namespace:Banking.WPF">
+    <Application.Resources/>
 </Application>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Banking.Core;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +17,12 @@ using System.Windows.Shapes;
 
 namespace Banking.WPF
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
         }
+
     }
 }

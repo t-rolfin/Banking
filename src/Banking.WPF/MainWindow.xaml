@@ -3,10 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Banking.WPF"
+        xmlns:viewmodels="clr-namespace:Banking.WPF.ViewModels"
+        xmlns:local="clr-namespace:Banking.WPF" xmlns:view="clr-namespace:Banking.WPF.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <ContentControl Content="{Binding CurrentViewModel}" HorizontalAlignment="Left" Width="656">
+        <ContentControl.Resources>
+            <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+                <view:LoginView/>
+            </DataTemplate>
+        </ContentControl.Resources>
+    </ContentControl>
 </Window>

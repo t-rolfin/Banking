@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Banking.WPF.Views
+namespace Banking.WPF.View
 {
     /// <summary>
-    /// Interaction logic for LogInViewModel.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LogInViewModel : Page
+    public partial class LoginView : UserControl
     {
-        public LogInViewModel()
+        public LoginView()
         {
             InitializeComponent();
         }
