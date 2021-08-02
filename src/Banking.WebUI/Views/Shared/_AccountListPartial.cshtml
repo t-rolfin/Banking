@@ -34,8 +34,8 @@
                                   data-ajax-confirm="Are you sure you want to close this account?" data-ajax-update="#editBid">
                                 <input type="hidden" name="accountId" value="@account.Id" />
                                 <input type="hidden" name="clientId" value="@Model.ClientId" />
-                                <button class="btn btn-danger w-100" type="submit">Close Account</button>
                             </form>
+                                <button class="btn btn-danger w-100" onclick="closeAccount('@Model.ClientId', '@account.Id')" type="button">Close Account</button>
                         </li>
                     }
                     else

@@ -59,7 +59,6 @@ namespace Banking.WebUI.Controllers
             return PartialView("_TransactionListPartial", transactions);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetTransactionsAsPdf(Guid accountId, string dateRange)
         {
@@ -85,12 +84,18 @@ namespace Banking.WebUI.Controllers
             return RedirectPermanent($"Client/{model.ClientId}");
         }
 
+        [HttpPost]
         public async Task<IActionResult> CloseAccount(Guid accountId, Guid clientId, CancellationToken cancellationToken)
         {
             var response = await _facade.CloseAccount(clientId, accountId, cancellationToken);
+            return Json(new { IsSuccess = response });
+        }
 
+        [HttpGet]
+        public  async Task<IActionResult> UpdateAccountList(Guid accountId, Guid clientId)
+        {
             var accounts = await _queryRepository.GetClientAccounts(clientId);
-
+            accounts.ClientId = clientId;
             return PartialView("_AccountListPartial", accounts);
         }
     }
