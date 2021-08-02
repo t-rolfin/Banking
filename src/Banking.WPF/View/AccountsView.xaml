@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="Banking.WPF.View.AccountsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materials="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" 
+             xmlns:local="clr-namespace:Banking.WPF.View"
+             mc:Ignorable="d" 
+             MaxHeight="500" MaxWidth="650" MinHeight="500" MinWidth="650">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Flipper.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Popupbox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <DataGrid ItemsSource="{Binding Accounts}">
+            <materials:Card
+              Background="#03a9f4"
+              Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+              Padding="0"
+              Width="200" Height="100" Margin="191,56,259,344">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition
+                    Height="Auto" />
+                        <RowDefinition
+                    Height="Auto" />
+                        <RowDefinition
+                    Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                  Grid.Row="0"
+                  Margin="16 16 16 4"
+                  Text="{Binding Id}" />
+                    <Separator
+                  Grid.Row="1"
+                  />
+                    <TextBlock
+                  Grid.Row="2"
+                  Margin="16 0 16 8"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Left"
+                  Text="March 19, 2016" />
+                    <StackPanel
+                  Grid.Row="2"
+                  Orientation="Horizontal"
+                  Margin="16 0 16 8"
+                  HorizontalAlignment="Right">
+                    
+                        <materials:PopupBox
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource MaterialDesignToolForegroundPopupBox}"
+                            Padding="2 0 2 0">
+                            <StackPanel>
+                                <Button
+                            Content="More" />
+                                    <Button
+                            Content="Options" />
+                                </StackPanel>
+                        </materials:PopupBox>
+                    </StackPanel>
+                </Grid>
+            </materials:Card>
+        </DataGrid>
+    </Grid>
+</UserControl>

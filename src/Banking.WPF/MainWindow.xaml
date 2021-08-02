@@ -4,14 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:Banking.WPF.ViewModels"
-        xmlns:local="clr-namespace:Banking.WPF" xmlns:view="clr-namespace:Banking.WPF.View"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <ContentControl Content="{Binding CurrentViewModel}" HorizontalAlignment="Left" Width="656">
-        <ContentControl.Resources>
-            <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
-                <view:LoginView/>
+        xmlns:local="clr-namespace:Banking.WPF" xmlns:views="clr-namespace:Banking.WPF.View"
+        mc:Ignorable="d" 
+        Title="Banking" MaxHeight="500" MaxWidth="650" MinHeight="500" MinWidth="650">
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type viewmodels:AccountsViewModel}">
+                <views:AccountsView />
             </DataTemplate>
-        </ContentControl.Resources>
-    </ContentControl>
+            <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+                <views:LoginView />
+            </DataTemplate>
+        </Grid.Resources>
+
+        <ContentControl Content="{Binding CurrentViewModel}" />
+    </Grid>
 </Window>
