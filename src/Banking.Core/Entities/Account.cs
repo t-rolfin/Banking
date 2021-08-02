@@ -138,6 +138,11 @@ namespace Banking.Core.Entities
 
         public void CloseAccount()
         {
+            if (this.Amount > 0 || this.Amount < 0)
+                throw new AccountCanNotBeClosedException(
+                        "The account amount must be 0 to be closed."
+                    );
+
             this.IsClosed = true;
         }
 

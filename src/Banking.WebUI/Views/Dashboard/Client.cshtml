@@ -2,11 +2,53 @@
 
 <partial name="_AccountListPartial" model="Model" />
 
+<!--Modal-->
+<div class="modal fade" id="closeAccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Action</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="to-be-replaced-close-account"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         function select(name, containerClass) {
             $('' + containerClass + ' > input[type=radio]').attr('checked', false);
             $(name).attr('checked', true);
         }
+
+        function closeAccount(clientId, accountId) {
+
+            var $updateAccounts = $("#editBid");
+            var $invalidCloseAccountUpdate = $("#to-be-replaced-close-account");
+
+            $.post("/Dashboard/CloseAccount", { accountId, clientId },
+                function (response) {
+                    if (response.isSuccess) {
+                        $.get("/Dashboard/UpdateAccountList", { accountId, clientId },
+                            function (data) {
+                                $updateAccounts.replaceWith(data);
+                            })
+                    } else {
+                        $.get("/Client/Transfer", { accountId },
+                            function (data) {
+                                $invalidCloseAccountUpdate.replaceWith(data);
+                                jQuery.noConflict();
+                                $('#closeAccountModal').modal('show');
+
+                            })
+                    }
+                });
+        }
+
     </script>
 }
