@@ -6,4 +6,62 @@
 
 <h1>Welcome Mr. Operator!</h1>
 <hr />
+
+<div class="container row justify-content-around p-2 m-auto border align-items-center" style="margin-bottom: 10px !important">
+
+    <div>
+        <input type="text" name="name" value="" id="search" placeholder="Search by name" />
+    </div>
+
+    <div>
+        <span>By Name</span>
+        <select id="sorting-name">
+            <option value="none">none</option>
+            <option value="name_asc" selected>Ascedent</option>
+            <option value="name_desc">Descedent</option>
+        </select>
+    </div>
+
+    <div>
+        <span>By Amount</span>
+        <select id="sorting-amount">
+            <option value="none" selected>none</option>
+            <option value="amount_asc">Ascedent</option>
+            <option value="amount_desc">Descedent</option>
+        </select>
+    </div>
+
+</div>
+
 <partial name="_ClientListPartial" model="Model" />
+
+@section Scripts{ 
+    <script>
+        $("#search").on("input", () => {
+            var $searchVal = $("#search").val();
+            var $toBeReplaced = $("#client-list-results")
+
+            $.get("/Dashboard/SearchByName", { searchedName: $searchVal }, function (data)
+                { $toBeReplaced.replaceWith(data); })
+        })
+
+        $("#sorting-name").change(function () {
+            var $sortingByName = $("#sorting-name").val();
+            var $searchVal = $("#search").val();
+            Sorting($searchVal, $sortingByName)
+            $("#sorting-amount").val('none');
+        })
+
+        $("#sorting-amount").change(function () {
+            var $sortingByName = $("#sorting-amount").val();
+            var $searchVal = $("#search").val();
+            Sorting($searchVal, $sortingByName)
+            $("#sorting-name").val('none');
+        })
+
+        function Sorting(searchedName, sortingType){
+            var $toBeReplaced = $("#client-list-results")
+            $.get("/Dashboard/SortingBy", { searchedName: searchedName, sortingType: sortingType }, function (data) { $toBeReplaced.replaceWith(data); })
+        }
+    </script>
+}

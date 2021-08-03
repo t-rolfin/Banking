@@ -70,5 +70,59 @@ namespace Banking.Infrastructure.Repositories
 
             return result;
         }
+
+        public async Task<IEnumerable<ClientModel>> GetClientsByName(string name)
+        {
+            var extraOption = string.IsNullOrWhiteSpace(name) ? "" : $" WHERE CONCAT(FirstName,' ', LastName) LIKE '%{name}%'";
+
+            string query = "SELECT Id, CNP, concat(FirstName, ' ', LastName) as FullName, Address, Total FROM clients C " +
+                "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
+                $"{extraOption}";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<ClientModel>(query);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ClientModel>> GetClientsSortedByAmount(string searchedName, string sorted)
+        {
+            string query = string.IsNullOrWhiteSpace(searchedName)
+                ? "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
+                    $"ORDER BY Total {sorted}"
+
+                : "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
+                    $"WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%' ORDER BY Total {sorted}";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<ClientModel>(query);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ClientModel>> GetClientsSortedByName(string searchedName, string sorted)
+        {
+            string query = string.IsNullOrWhiteSpace(searchedName)
+                ? "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
+                    $"ORDER BY FullName { sorted }"
+
+                :"SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
+                    $"WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%' ORDER BY FullName { sorted }";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<ClientModel>(query);
+
+            return result;
+        }
     }
 }

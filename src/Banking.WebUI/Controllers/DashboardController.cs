@@ -98,5 +98,34 @@ namespace Banking.WebUI.Controllers
             accounts.ClientId = clientId;
             return PartialView("_AccountListPartial", accounts);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchByName(string searchedName)
+        {
+            var clients = await _queryRepository.GetClientsByName(searchedName);
+            return PartialView("_ClientListPartial", clients);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SortingBy(string searchedName, string sortingType)
+        {
+            IEnumerable<ClientModel> clients;
+            if (sortingType.Contains("name"))
+            {
+                var orderType = sortingType.Split("_")[1];
+                clients = await _queryRepository.GetClientsSortedByName(searchedName, orderType);
+            }
+            else if(sortingType.Contains("amount"))
+            {
+                var orderType = sortingType.Split("_")[1];
+                clients = await _queryRepository.GetClientsSortedByAmount(searchedName, orderType);
+            }
+            else
+            {
+                clients = await _queryRepository.GetClientsByName(searchedName);
+            }
+
+            return PartialView("_ClientListPartial", clients);
+        }
     }
 }

@@ -13,5 +13,8 @@ namespace Banking.Infrastructure.Repositories
         Task<TransactionListModel> GetAccountTransactions(Guid accountId);
         Task<TransactionListModel> GetAccountTransactionsBetween(Guid accountId, DateTime startDate, DateTime endDate);
         Task<IEnumerable<ClientModel>> GetClients();
+        Task<IEnumerable<ClientModel>> GetClientsByName(string name);
+        Task<IEnumerable<ClientModel>> GetClientsSortedByName(string searchedName, string sorted);
+        Task<IEnumerable<ClientModel>> GetClientsSortedByAmount(string searchedName, string sorted);
     }
 }
