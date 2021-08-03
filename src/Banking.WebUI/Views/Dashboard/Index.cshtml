@@ -63,5 +63,6 @@
             var $toBeReplaced = $("#client-list-results")
             $.get("/Dashboard/SortingBy", { searchedName: searchedName, sortingType: sortingType }, function (data) { $toBeReplaced.replaceWith(data); })
         }
+
     </script>
 }

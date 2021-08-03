@@ -37,7 +37,7 @@ namespace Banking.WebUI.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var client = await _facade.RegisterClient(
+            var result = await _facade.RegisterClient(
                 model.CNP,
                 model.PIN,
                 model.FirstName,
@@ -48,11 +48,11 @@ namespace Banking.WebUI.Controllers
                 cancellationToken);
             
 
-            if (client is not null)
+            if (result.IsSuccess)
             {
                 var claims = new[] {
-                        new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
-                        new Claim(ClaimTypes.Name, client.GetFullName()),
+                        new Claim(ClaimTypes.NameIdentifier, result.Value.Id.ToString()),
+                        new Claim(ClaimTypes.Name, result.Value.GetFullName()),
                     };
 
                 var identity = new ClaimsIdentity(claims, "LogIn");
@@ -129,11 +129,11 @@ namespace Banking.WebUI.Controllers
                     return string.IsNullOrWhiteSpace(returnUrl) ? RedirectPermanent("/") : RedirectPermanent(returnUrl);
                 }
 
-                return View();
+                return RedirectToAction("LogIn");
             }
             else
             {
-                return View();
+                return RedirectToAction("LogIn");
             }
         }
 

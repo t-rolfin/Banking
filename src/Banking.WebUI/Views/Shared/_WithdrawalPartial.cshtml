@@ -1,13 +1,14 @@
 ﻿@model System.Guid
 
 <div id="to-be-replaced">
-    <form method="post" asp-action="Withdrawal" asp-controller="Client" data-ajax="true" id="form-to-submite"
+            
+    <form method="post" asp-action="Withdrawal" asp-controller="Client" data-ajax="true" id="form-to-submite" data-ajax-success="$('#exampleModal').modal('toggle');"
           onsubmit="NoEv(event)" data-ajax-url="/Client/Withdrawal" data-ajax-update="#editBid" data-ajax-loading="#loading" data-ajax-mode="replace">
         <input type="hidden" name="accountId" value="@Model" />
 
         <div class="form-group">
             <label for="value-to-deposit">Value</label>
-            <input type="number" class="form-control" name="value" value="" id="value-to-deposit" />
+            <input type="number" class="form-control" name="value" value="" id="value-to-deposit" step=".01" />
         </div>
 
         <button class="btn btn-primary" type="submit">Withdrawal</button>

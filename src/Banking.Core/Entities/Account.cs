@@ -61,7 +61,8 @@ namespace Banking.Core.Entities
 
         public decimal Withdrawal(decimal withdrawalValue)
         {
-            if(withdrawalValue > this.Amount) throw new InsufficientAmountException();
+            if(withdrawalValue > this.Amount) 
+                throw new InsufficientAmountException("You don't have the required amount of money!");
 
             if (this.AccountType.HasCommisions)
             {

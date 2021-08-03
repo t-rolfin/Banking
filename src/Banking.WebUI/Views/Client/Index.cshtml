@@ -29,7 +29,6 @@
                 case typeOfAction.Withdrawal:
                     $.get('/Client/Withdrawal', { accountId: AccountId }, function (data) {
                         $detailDiv.replaceWith(data);
-                        console.log(data)
                     });
                     break;
                 case typeOfAction.Deposit:
@@ -45,5 +44,6 @@
             }
         };
 
+        
     </script>
 }

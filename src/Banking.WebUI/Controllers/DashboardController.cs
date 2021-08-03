@@ -120,7 +120,7 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> CloseAccount(Guid accountId, Guid clientId, CancellationToken cancellationToken)
         {
             var response = await _facade.CloseAccount(clientId, accountId, cancellationToken);
-            return Json(new { IsSuccess = response });
+            return Json(new { IsSuccess = response.IsSuccess });
         }
 
         [HttpGet]

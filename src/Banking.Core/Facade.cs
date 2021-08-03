@@ -4,6 +4,7 @@ using Banking.Core.Exceptions;
 using Banking.Core.Interfaces;
 using Banking.Shared.Enums;
 using Banking.Shared.Helpers;
+using Rolfin.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,14 +40,15 @@ namespace Banking.Core
             GenerateBankAccounts();
         }
 
-        public async Task<Client> RegisterClient(string cnp, string pin, string firstName,
+        public async Task<Result<Client>> RegisterClient(string cnp, string pin, string firstName,
             string lastName, string address, AccountTypeEnum accountType, CurrencyType currencyType,
             CancellationToken cancellationToken = default)
         {
             try
             {
                 if (await _clientRepository.GetByCNPAsync(cnp) is not null)
-                    return null;
+                    return Result<Client>.Invalid()
+                        .With("An account with this CNP already exists.");
 
                 var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
                 var IBAN = IBANGenerator.Generate();
@@ -61,11 +63,12 @@ namespace Banking.Core
 
                 await _clientRepository.CreateAsync(client, cancellationToken);
 
-                return client;
+                return Result<Client>.Success(client);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return null;
+                return Result<Client>.Invalid()
+                    .With(ex.Message);
             }
         }
 
@@ -76,59 +79,78 @@ namespace Banking.Core
                 var client = await _clientRepository.GetByCNPAsync(cnp);
 
                 if (client is null)
-                    return null;
+                    return Result<Client>.Invalid()
+                        .With("An account with specified date does not exists.");
 
                 var decryptedPIN = EncryptionManager.Decrypt(client.PIN, _encryptionKey);
 
-                return pin == decryptedPIN ? client : null;
+                return pin == decryptedPIN
+                    ? Result<Client>.Success(client)
+                    : Result<Client>.Invalid().With("PIN Invalid.");
             }
             catch (Exception ex)
             {
-                throw;
+                return Result<Client>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task ChangeClientPIN(string cnp, string newPIN, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> ChangeClientPIN(string cnp, string newPIN, CancellationToken cancellationToken = default)
         {
             var client = await _clientRepository.GetByCNPAsync(cnp);
+
+            if (client is null)
+                return Result<bool>.Invalid()
+                    .With("An user with CNP can not be found!");
+
             var encryptedNewPIN = EncryptionManager.Encrypt(newPIN, _encryptionKey);
             client.ChangePIN(encryptedNewPIN);
 
-            await _clientRepository.UpdateAsync(client, cancellationToken);
+            var respose = await _clientRepository.UpdateAsync(client, cancellationToken);
+
+            return respose 
+                ? Result<bool>.Success() 
+                : Result<bool>.Invalid().With("Somthing went wrong, please try again!");
         }
 
-        public async Task Transfer(Guid accountId, string destinationIban, decimal value, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Transfer(Guid accountId, string destinationIban, decimal value, CancellationToken cancellationToken)
         {
-            var sourceAccount = await _accountRepository.GetById(accountId);
-            var destinationAccount = await _accountRepository.GetByIBAN(destinationIban);
+            try
+            {
+                var sourceAccount = await _accountRepository.GetById(accountId);
+                var destinationAccount = await _accountRepository.GetByIBAN(destinationIban);
+                var commission = await _accountService.Transfer(sourceAccount, destinationAccount, value);
+                _bankAccount.Deposit(commission);
+                await _accountRepository.UpdateAccountList(cancellationToken, sourceAccount, destinationAccount);
 
-            var commission = await _accountService.Transfer(sourceAccount, destinationAccount, value);
-            _bankAccount.Deposit(commission);
-
-            await _accountRepository.UpdateAccountList(cancellationToken, sourceAccount, destinationAccount);
+                return Result<bool>.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result<bool>.Invalid().With(ex.Message);
+            }
         }
 
-        public async Task Withdrawal(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> Withdrawal(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
                 var client = await _clientRepository.GetByIdAsync(clientId);
                 var account = client?.Accounts.First(x => x.Id == accountId);
-
                 decimal commission = account.Withdrawal(value);
-
                 _cashAccount.Deposit(value);
                 _bankAccount.Deposit(commission);
-
                 await _clientRepository.UpdateAsync(client, cancellationToken);
+
+                return Result<bool>.Success()
+                    .With($"You Withdrawal with success {value} {account.CurrencyType} from account.");
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task Deposit(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> Deposit(Guid clientId, Guid accountId, decimal value, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -137,34 +159,14 @@ namespace Banking.Core
                 _cashAccount.Deposit(value);
                 decimal commission = account.Deposit(value);
                 _bankAccount.Deposit(commission);
-
                 await _clientRepository.UpdateAsync(client, cancellationToken);
+
+                return Result<bool>.Success()
+                    .With($"You deposited with success {value} {account.CurrencyType} into account.");
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
-            }
-        }
-
-        public async Task CreateAccount(string cnp, AccountTypeEnum accountType, CurrencyType currencyType, 
-            CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
-                var IBAN = IBANGenerator.Generate();
-
-                var client = await _clientRepository.GetByCNPAsync(cnp);
-
-                client.CreateAccount(
-                    new Account(client.Id, IBAN, _accountType, currencyType)
-                    );
-
-                await _clientRepository.UpdateAsync(client, cancellationToken);
-            }
-            catch
-            {
-                throw;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
@@ -200,25 +202,22 @@ namespace Banking.Core
             }
 
         }
-        public async Task<bool> CloseAccount(Guid clientId, Guid accountId, CancellationToken cancellationToken)
+        
+        public async Task<Result<bool>> CloseAccount(Guid clientId, Guid accountId, CancellationToken cancellationToken)
         {
-            var client = await _clientRepository.GetByIdAsync(clientId);
-
-            if (client is not null)
+            try
             {
-                try
-                {
-                    client.CloseAccount(accountId);
-                    await _clientRepository.UpdateAsync(client, cancellationToken);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+                var client = await _clientRepository.GetByIdAsync(clientId);
+                client.CloseAccount(accountId);
+                await _clientRepository.UpdateAsync(client, cancellationToken);
+                return Result<bool>.Success()
+                    .With("Your account was successfully closed!");
             }
-
-            return false;
+            catch (Exception ex)
+            {
+                return Result<bool>.Invalid()
+                    .With(ex.Message);
+            }
         }
 
 

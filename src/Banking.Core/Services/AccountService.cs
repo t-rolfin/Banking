@@ -23,7 +23,7 @@ namespace Banking.Core.Services
         {
 
             if (sourceAccount.Amount < transferValue)
-                throw new InsufficientAmountException();
+                throw new InsufficientAmountException("You can't transfer more money then you have!");
 
             var commission = ApplyCommission(sourceAccount, OperationType.Transfer, transferValue);
 

@@ -35,8 +35,8 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> Withdrawal(decimal value, Guid accountId, CancellationToken cancellationToken)
         {
             var clientId = GetCurrentClientId();
-            await _facade.Withdrawal(clientId, accountId, value, cancellationToken);
-            return await GetAccountForCurrentClient(clientId);
+            var result = await _facade.Withdrawal(clientId, accountId, value, cancellationToken);
+            return await GetAccountForCurrentClient(clientId, result.MetaResult.Message, result.IsSuccess);
         }
 
 
@@ -44,17 +44,17 @@ namespace Banking.WebUI.Controllers
         public async Task<IActionResult> Deposit(decimal value, Guid accountId, CancellationToken cancellationToken)
         {
             Guid clientId = GetCurrentClientId();
-            await _facade.Deposit(clientId, accountId, value, cancellationToken);
-            return await GetAccountForCurrentClient(clientId);
+            var result = await _facade.Deposit(clientId, accountId, value, cancellationToken);
+            return await GetAccountForCurrentClient(clientId, result.MetaResult.Message, result.IsSuccess);
         }
 
 
         [HttpPost]
         public async Task<IActionResult> Transfer(Guid accountId, string destinationAccountIBAN, decimal value, CancellationToken cancellationToken)
         {
-            await _facade.Transfer(accountId, destinationAccountIBAN, value, cancellationToken);
+            var result = await _facade.Transfer(accountId, destinationAccountIBAN, value, cancellationToken);
             var clientId = GetCurrentClientId();
-            return await GetAccountForCurrentClient(clientId);
+            return await GetAccountForCurrentClient(clientId, result.MetaResult.Message, result.IsSuccess);
         }
 
         [HttpGet]
@@ -77,10 +77,12 @@ namespace Banking.WebUI.Controllers
 
 
 
-        private async Task<IActionResult> GetAccountForCurrentClient(Guid clientId)
+        private async Task<IActionResult> GetAccountForCurrentClient(Guid clientId, string Message = "", bool actionSucceeded = false)
         {
             var accounts = await _queryRepository.GetClientAccounts(clientId);
             accounts.ClientId = clientId;
+            accounts.Message = Message;
+            accounts.ActionSucceeded = actionSucceeded;
             return PartialView("_AccountListPartial", accounts);
         }
         private Guid GetCurrentClientId()

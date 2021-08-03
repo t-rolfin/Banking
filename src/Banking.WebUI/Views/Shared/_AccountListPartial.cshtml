@@ -10,6 +10,30 @@
         <partial name="_CreateAccountPartial" model="new CreateAccountModel() { ClientId = Model.ClientId }" />
     }
 
+    @if (Model.ActionSucceeded && !string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div class="container w-100">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @Model.Message
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    }
+    else if(!Model.ActionSucceeded && !string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div class="container w-100">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @Model.Message
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    }
+    else { }
+
     @if (Model.Accounts is not null)
     {
         foreach (var account in Model.Accounts)
@@ -30,27 +54,27 @@
                         </li>
 
                         <li class="list-group-item">
-                            <form asp-action="CloseAccount" asp-controller="Dashboard" data-ajax="true" 
+                            <form asp-action="CloseAccount" asp-controller="Dashboard" data-ajax="true"
                                   data-ajax-confirm="Are you sure you want to close this account?" data-ajax-update="#editBid">
                                 <input type="hidden" name="accountId" value="@account.Id" />
                                 <input type="hidden" name="clientId" value="@Model.ClientId" />
                             </form>
-                                <button class="btn btn-danger w-100" onclick="closeAccount('@Model.ClientId', '@account.Id')" type="button">Close Account</button>
+                            <button class="btn btn-danger w-100" onclick="closeAccount('@Model.ClientId', '@account.Id')" type="button">Close Account</button>
                         </li>
                     }
                     else
                     {
                         <li class="list-group-item">
                             <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
-                                onclick="func(typeOfAction.Withdrawal, '@account.Id.ToString()')">Withdrawal</a>
+                               onclick="func(typeOfAction.Withdrawal, '@account.Id.ToString()')">Withdrawal</a>
                         </li>
                         <li class="list-group-item">
                             <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
-                                onclick="func(typeOfAction.Deposit, '@account.Id.ToString()')">Deposit</a>
+                               onclick="func(typeOfAction.Deposit, '@account.Id.ToString()')">Deposit</a>
                         </li>
                         <li class="list-group-item">
                             <a class="btn btn-primary w-100" href="#" data-toggle="modal" data-target="#exampleModal"
-                                onclick="func(typeOfAction.Transfer, '@account.Id.ToString()')">Transfer</a>
+                               onclick="func(typeOfAction.Transfer, '@account.Id.ToString()')">Transfer</a>
                         </li>
                     }
 
@@ -63,19 +87,19 @@
 </div>
 
 
-<!--Modal-->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Action</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="to-be-replaced"></div>
+    <!--Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Action</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="to-be-replaced"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>

@@ -30,9 +30,6 @@ namespace Banking.Infrastructure.Repositories
         {
             try
             {
-                if (CheckIfClientExistsByCNP(entity.CNP))
-                    throw new ClientAlreadyExistsException("An account with this CNP already exists.");
-
                 if (entity is null || entity == default)
                     throw new ArgumentNullException("An entity of type 'Client' must be provided!");
 
@@ -92,7 +89,7 @@ namespace Banking.Infrastructure.Repositories
             try
             {
                 if (id == Guid.Empty)
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentNullException();
 
                 var client = await _context.Clients.FindAsync(id);
 

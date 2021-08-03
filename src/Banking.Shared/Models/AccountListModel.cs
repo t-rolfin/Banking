@@ -24,6 +24,8 @@ namespace Banking.Shared.Models
         }
 
         public Guid ClientId { get; set; }
+        public string Message { get; set; }
+        public bool ActionSucceeded { get; set; }
         public List<AccountModel> Accounts { get; set; }
     }
 
