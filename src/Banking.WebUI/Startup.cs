@@ -35,7 +35,7 @@ namespace Banking.WebUI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddSingleton(x => {
                 var connectionString = Configuration.GetConnectionString("clientConnectionString");
