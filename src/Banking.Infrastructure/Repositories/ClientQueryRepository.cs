@@ -46,6 +46,20 @@ namespace Banking.Infrastructure.Repositories
             return new TransactionListModel(result);
         }
 
+        public async Task<TransactionListModel> GetAccountTransactionsByIds(Guid accountId, string listOfIds)
+        {
+            string query = $"SELECT * FROM transactions WHERE SourceAccountId = '{ accountId }' " +
+                $"AND Id in ({listOfIds})";
+
+            using var connection = new SqlConnection(_connectionString.Value);
+
+            await connection.OpenAsync();
+
+            var result = await connection.QueryAsync<TransactionModel>(query);
+
+            return new TransactionListModel(result);
+        }
+
         public async Task<AccountListModel> GetClientAccounts(Guid clientId)
         {
             string query = $"SELECT * FROM accounts WHERE ClientId = @ClientId AND IsClosed = 0";

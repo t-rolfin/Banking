@@ -70,11 +70,43 @@ namespace Banking.WebUI.Controllers
 
             var transactions = await _queryRepository.GetAccountTransactionsBetween(accountId, dates.First(), dates.Last());
             var content = await _fileExportService.GetStreamFor(transactions.Transactions);
-            var contentType = "application/pdf";
             var fileName = "extras_account.pdf";
 
-            return File(content, contentType, fileName);
+            Guid handle = Guid.NewGuid();
+            TempData[handle.ToString()] = content;
+
+            return new JsonResult(new { FileGuid = handle, FileName = fileName });
         }
+
+        [HttpGet]
+        public  async Task<IActionResult> GetSelectedTransactionsAsPdf(Guid accountId, string transactionsIds)
+        {
+            var transactions = await _queryRepository.GetAccountTransactionsByIds(accountId, transactionsIds);
+            var content = await _fileExportService.GetStreamFor(transactions.Transactions);
+            Guid handle = Guid.NewGuid();
+            TempData[handle.ToString()] = content;
+
+            var fileName = "extras_account.pdf";
+
+            return new JsonResult(new { FileGuid = handle, FileName = fileName } );
+        }
+
+        public virtual IActionResult DownlaodPdf(string fileGuid, string fileName)
+        {
+            if (TempData[fileGuid] != null)
+            {
+                var contentType = "application/pdf";
+                byte[] data = TempData[fileGuid] as byte[];
+                return File(data, contentType, fileName);
+            }
+            else
+            {
+                // Problem - Log the error, generate a blank file,
+                //           redirect to another controller action - whatever fits with your application
+                return new EmptyResult();
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAccount(CreateAccountModel model, CancellationToken cancellationToken)

@@ -6,7 +6,7 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col"><input type="checkbox" name="name" value="" /></th>
+                <th scope="col"><input type="checkbox" name="name" value="" id="check-all" /></th>
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
                 <th scope="col">Amount</th>
@@ -18,7 +18,7 @@
             @foreach (var transaction in Model.Transactions)
             {
                 <tr>
-                    <th scope="col"><input type="checkbox" name="name" value="" /></th>
+                    <th scope="col"><input type="checkbox" name="name" value="@transaction.Id" id="checked-for-export"/></th>
                     <th scope="row">@transaction.Id.ToString().Split("-").First()</th>
                     <td>@transaction.Date.ToShortDateString()</td>
                     <td>@transaction.Amount @transaction.CurrencyType</td>
