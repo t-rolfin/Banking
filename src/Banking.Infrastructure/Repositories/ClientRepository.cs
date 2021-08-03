@@ -31,10 +31,10 @@ namespace Banking.Infrastructure.Repositories
             try
             {
                 if (CheckIfClientExistsByCNP(entity.CNP))
-                    throw new ClientAlreadyExistsException();
+                    throw new ClientAlreadyExistsException("An account with this CNP already exists.");
 
                 if (entity is null || entity == default)
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException("An entity of type 'Client' must be provided!");
 
                 foreach (var account in entity.Accounts)
                 {
@@ -47,9 +47,9 @@ namespace Banking.Infrastructure.Repositories
 
                 return response > 0 ? true : false;
             }
-            catch (Exception)
+            catch
             {
-                throw;
+                return false;
             }
         }
         public async Task<bool> UpdateAsync(Client entity, CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace Banking.Infrastructure.Repositories
             try
             {
                 if (entity is null || entity == default)
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException("An entity of type 'Client' must be provided!");
 
                 if(entity.HasNewAccount)
                 {
@@ -76,9 +76,9 @@ namespace Banking.Infrastructure.Repositories
 
                 return response > 1 ? true : false;
             }
-            catch (Exception)
+            catch
             {
-                throw;
+                return false;
             }
         }
         public async Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id)
@@ -89,24 +89,32 @@ namespace Banking.Infrastructure.Repositories
         }
         public async Task<Client> GetByIdAsync(Guid id)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentOutOfRangeException();
-
-            var client = await _context.Clients.FindAsync(id);
-
-            if (client is not null)
+            try
             {
-                foreach (var account in client?.Accounts)
+                if (id == Guid.Empty)
+                    throw new ArgumentOutOfRangeException();
+
+                var client = await _context.Clients.FindAsync(id);
+
+                if (client is not null)
                 {
-                    int accountType = (int)_context.Entry(account).Property("AccType").CurrentValue;
+                    foreach (var account in client?.Accounts)
+                    {
+                        int accountType = (int)_context.Entry(account).Property("AccType").CurrentValue;
 
-                    account.SetAccountType(_accountTypeFactory.GetAccountTypeByType((AccountTypeEnum)accountType));
+                        account.SetAccountType(_accountTypeFactory.GetAccountTypeByType((AccountTypeEnum)accountType));
+                    }
                 }
-            }
 
-            return client;
+                return client;
+            }
+            catch 
+            {
+                return null;
+            }
+            
         }
-        public async Task<Client> GetClientByCNPAsync(string cnp)
+        public async Task<Client> GetByCNPAsync(string cnp)
         {
             try
             {
@@ -127,7 +135,7 @@ namespace Banking.Infrastructure.Repositories
             }
             catch
             {
-                throw;
+                return null;
             }
         }
 

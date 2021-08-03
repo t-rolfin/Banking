@@ -45,7 +45,7 @@ namespace Banking.Core
         {
             try
             {
-                if (await _clientRepository.GetClientByCNPAsync(cnp) is not null)
+                if (await _clientRepository.GetByCNPAsync(cnp) is not null)
                     return null;
 
                 var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
@@ -73,7 +73,7 @@ namespace Banking.Core
         {
             try
             {
-                var client = await _clientRepository.GetClientByCNPAsync(cnp);
+                var client = await _clientRepository.GetByCNPAsync(cnp);
 
                 if (client is null)
                     return null;
@@ -90,7 +90,7 @@ namespace Banking.Core
 
         public async Task ChangeClientPIN(string cnp, string newPIN, CancellationToken cancellationToken = default)
         {
-            var client = await _clientRepository.GetClientByCNPAsync(cnp);
+            var client = await _clientRepository.GetByCNPAsync(cnp);
             var encryptedNewPIN = EncryptionManager.Encrypt(newPIN, _encryptionKey);
             client.ChangePIN(encryptedNewPIN);
 
@@ -154,7 +154,7 @@ namespace Banking.Core
                 var _accountType = _accountTypeFactory.GetAccountTypeByType(accountType);
                 var IBAN = IBANGenerator.Generate();
 
-                var client = await _clientRepository.GetClientByCNPAsync(cnp);
+                var client = await _clientRepository.GetByCNPAsync(cnp);
 
                 client.CreateAccount(
                     new Account(client.Id, IBAN, _accountType, currencyType)
@@ -175,7 +175,7 @@ namespace Banking.Core
 
         async Task<Account> GetAccountForClient(string cnp, string iban)
         {
-            var client = await _clientRepository.GetClientByCNPAsync(cnp);
+            var client = await _clientRepository.GetByCNPAsync(cnp);
             return client.Accounts.FirstOrDefault(x => x.IBAN == iban);
         }
 

@@ -11,7 +11,7 @@ namespace Banking.Core.Interfaces
     public interface IClientRepository : IAsyncRepository<Client, Guid>
     {
         Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id);
-        Task<Client> GetClientByCNPAsync(string cnp);
+        Task<Client> GetByCNPAsync(string cnp);
     }
 
 

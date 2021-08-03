@@ -27,7 +27,7 @@ namespace Banking.Infrastructure.Repositories
 
             await connection.OpenAsync();
 
-            var result = await connection.QueryAsync<TransactionModel>(query);
+            var result = await ExecuteQuery<TransactionModel>(query);
 
             return new TransactionListModel(result);
         }
@@ -41,7 +41,7 @@ namespace Banking.Infrastructure.Repositories
 
             await connection.OpenAsync();
 
-            var result = await connection.QueryAsync<TransactionModel>(query);
+            var result = await ExecuteQuery<TransactionModel>(query);
 
             return new TransactionListModel(result);
         }
@@ -51,11 +51,7 @@ namespace Banking.Infrastructure.Repositories
             string query = $"SELECT * FROM transactions WHERE SourceAccountId = '{ accountId }' " +
                 $"AND Id in ({listOfIds})";
 
-            using var connection = new SqlConnection(_connectionString.Value);
-
-            await connection.OpenAsync();
-
-            var result = await connection.QueryAsync<TransactionModel>(query);
+            var result = await ExecuteQuery<TransactionModel>(query);
 
             return new TransactionListModel(result);
         }
@@ -77,65 +73,55 @@ namespace Banking.Infrastructure.Repositories
             string query = "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
                 "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId";
 
-            using var connection = new SqlConnection(_connectionString.Value);
-            await connection.OpenAsync();
-
-            var result = await connection.QueryAsync<ClientModel>(query);
-
-            return result;
+            return await ExecuteQuery<ClientModel>(query);
         }
 
         public async Task<IEnumerable<ClientModel>> GetClientsByName(string name)
         {
-            var extraOption = string.IsNullOrWhiteSpace(name) ? "" : $" WHERE CONCAT(FirstName,' ', LastName) LIKE '%{name}%'";
+            var extraOption = string.IsNullOrWhiteSpace(name) 
+                ? "" 
+                : $" WHERE CONCAT(FirstName,' ', LastName) LIKE '%{name}%'";
 
             string query = "SELECT Id, CNP, concat(FirstName, ' ', LastName) as FullName, Address, Total FROM clients C " +
                 "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
                 $"{extraOption}";
 
-            using var connection = new SqlConnection(_connectionString.Value);
-            await connection.OpenAsync();
-
-            var result = await connection.QueryAsync<ClientModel>(query);
-
-            return result;
+            return await ExecuteQuery<ClientModel>(query);
         }
 
         public async Task<IEnumerable<ClientModel>> GetClientsSortedByAmount(string searchedName, string sorted)
         {
-            string query = string.IsNullOrWhiteSpace(searchedName)
-                ? "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+
+            string extraOption = string.IsNullOrWhiteSpace(searchedName) 
+                ? "" 
+                : $"WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%'";
+
+            string query = "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
                     "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
-                    $"ORDER BY Total {sorted}"
+                    $" {extraOption} ORDER BY Total {sorted}";
 
-                : "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
-                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
-                    $"WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%' ORDER BY Total {sorted}";
-
-            using var connection = new SqlConnection(_connectionString.Value);
-            await connection.OpenAsync();
-
-            var result = await connection.QueryAsync<ClientModel>(query);
-
-            return result;
+            return await ExecuteQuery<ClientModel>(query);
         }
 
         public async Task<IEnumerable<ClientModel>> GetClientsSortedByName(string searchedName, string sorted)
         {
-            string query = string.IsNullOrWhiteSpace(searchedName)
-                ? "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
-                    "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
-                    $"ORDER BY FullName { sorted }"
+            var extraOption = string.IsNullOrWhiteSpace(searchedName)
+                ? ""
+                : "WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%'";
 
-                :"SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
+            string query = "SELECT Id, CNP, (FirstName + ' ' + LastName) as FullName, Address, Total FROM clients C " +
                     "JOIN(SELECT ClientId, SUM(Amount) AS Total FROM accounts WHERE IsClosed = 0 GROUP BY ClientId) A ON C.Id = A.ClientId " +
-                    $"WHERE (FirstName + ' ' + LastName) LIKE '%{searchedName}%' ORDER BY FullName { sorted }";
+                    $" {extraOption} ORDER BY FullName { sorted }";
 
+            return await ExecuteQuery<ClientModel>(query);
+        }
+
+
+        async Task<IEnumerable<T>> ExecuteQuery<T>(string query)
+        {
             using var connection = new SqlConnection(_connectionString.Value);
             await connection.OpenAsync();
-
-            var result = await connection.QueryAsync<ClientModel>(query);
-
+            var result = await connection.QueryAsync<T>(query);
             return result;
         }
     }
