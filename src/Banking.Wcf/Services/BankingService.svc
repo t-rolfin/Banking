@@ -1,0 +1,7 @@
+﻿<%@ ServiceHost
+    Language="C#"
+    Debug="true"
+    Service="Banking.Wcf.Services.IBankingService, Banking.Wcf"
+    Factory="Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf"
+    CodeBehind="BankingService.svc.cs" 
+%>
