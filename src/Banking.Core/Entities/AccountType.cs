@@ -16,7 +16,7 @@ namespace Banking.Core.Entities
             EnumPosition = enumPosition;
         }
 
-        public string Name { get; init; }
+        public string Name { get; protected set; }
         public int EnumPosition { get; set; }
         public bool HasCommisions { get; protected set; }
         public List<Operation> Operations { get; } = new();

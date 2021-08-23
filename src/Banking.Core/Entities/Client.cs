@@ -34,11 +34,11 @@ namespace Banking.Core.Entities
 
 
         public Guid Id { get; set; }
-        public string CNP { get; init; }
+        public string CNP { get; protected set; }
         public string PIN { get; set; }
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
-        public string Address { get; init; }
+        public string FirstName { get; protected set; }
+        public string LastName { get; protected set; }
+        public string Address { get; protected set; }
         public bool HasNewAccount { get; protected set; }
         public virtual IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
 

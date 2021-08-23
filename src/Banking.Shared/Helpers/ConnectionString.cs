@@ -13,6 +13,6 @@ namespace Banking.Shared.Helpers
             Value = value;
         }
 
-        public string Value { get; init; }
+        public string Value { get; protected set; }
     }
 }

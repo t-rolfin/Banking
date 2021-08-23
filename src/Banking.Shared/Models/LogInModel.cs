@@ -7,9 +7,23 @@ using System.Threading.Tasks;
 
 namespace Banking.Shared.Models
 {
-    public record LogInModel( 
-        [Required] string CNP, 
-        [Required] string PIN
-        )
-    {}
+    public class LogInModel {
+
+        public LogInModel()
+        {
+
+        }
+
+        public LogInModel(string cNP, string pIN)
+        {
+            CNP = cNP;
+            PIN = pIN;
+        }
+
+        [Required]
+        public string CNP { get; set; }
+
+        [Required] 
+        public string PIN { get; set; }
+    }
 }

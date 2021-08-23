@@ -29,10 +29,10 @@ namespace Banking.Core.Entities
         }
 
         public Guid Id { get; }
-        public Guid ClientId { get; init; }
+        public Guid ClientId { get; protected set; }
         public string IBAN { get; set; }
         public virtual AccountType AccountType { get; protected set; }
-        public virtual CurrencyType CurrencyType { get; init; }
+        public virtual CurrencyType CurrencyType { get; protected set; }
         public decimal Amount { get; set; }
         public bool IsClosed { get; protected set; }
         public bool IsNew { get; protected set; }

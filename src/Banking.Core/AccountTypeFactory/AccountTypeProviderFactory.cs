@@ -17,7 +17,7 @@ namespace Banking.Core.AccountTypeFactory
             this.accountType = new();
             var accountTypeProviderType = typeof(IAccountType);
             accountType = accountTypeProviderType.Assembly
-                .ExportedTypes.Where(x => x.IsAssignableTo(accountTypeProviderType) && !x.IsInterface && !x.IsAbstract)
+                .GetTypes().Where(x => x.GetInterfaces().Contains(accountTypeProviderType))
                 .Select(x =>
                  {
                      var parameterlessCtor = x.GetConstructors().SingleOrDefault(y => y.GetParameters().Length == 0);
