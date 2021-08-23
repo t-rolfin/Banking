@@ -15,10 +15,12 @@ namespace Banking.Core.Interfaces
     }
 
 
-    public interface IInMemoryClientRepository : IRepository<Client>
+    public interface IInMemoryClientRepository : IAsyncRepository<Client, Guid>
     {
         Client GetByCNP(string cnp);
         void UpdatePIN(Client client);
         List<Account> GetClientAccounts(string cnp);
+        Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id);
+        Task<Client> GetByCNPAsync(string cnp);
     }
 }

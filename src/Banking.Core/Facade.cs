@@ -27,8 +27,7 @@ namespace Banking.Core
         private static Account _cashAccount;
 
         public Facade(
-            IClientRepository 
-            clientRepository, 
+            IClientRepository clientRepository, 
             AccountTypeProviderFactory accountTypeFactory, 
             IAccountRepository accountRepository, 
             IAccountService accountService)
