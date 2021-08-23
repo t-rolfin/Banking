@@ -67,17 +67,6 @@ namespace Banking.Core.Repositories
             return client.Accounts.ToList();
         }
 
-        public async Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id)
-        {
-            return await Task.Factory.StartNew(() =>
-            {
-                var client = _clients.FirstOrDefault(x => x.Id == id);
-                return client == default
-                    ? null
-                    : client.Accounts;
-            });
-        }
-
         public async Task<bool> UpdateAsync(Client entity, CancellationToken cancellationToken)
         {
             return await Task.Factory.StartNew(() =>
@@ -100,6 +89,17 @@ namespace Banking.Core.Repositories
             var dbClient = GetByCNP(client.CNP);
 
             dbClient.ChangePIN(client.PIN);
+        }
+
+        public async Task<IReadOnlyList<Account>> GetClientAccountsById(Guid id)
+        {
+            return await Task.Factory.StartNew(() =>
+            {
+                var client = _clients.FirstOrDefault(x => x.Id == id);
+                return client == default
+                    ? null
+                    : client.Accounts;
+            });
         }
     }
 }
