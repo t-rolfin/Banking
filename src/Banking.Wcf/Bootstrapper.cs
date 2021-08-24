@@ -13,6 +13,7 @@ using Banking.Wcf.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
@@ -27,7 +28,10 @@ namespace Banking.Wcf
 
             services.AddHttpClient();
 
-            services.AddSingleton(new ExchangeRatesConfigurations("https://api.frankfurter.app/latest", "1234sdf"));
+            services.AddSingleton(
+                new ExchangeRatesConfigurations(
+                    ConfigurationManager.AppSettings["ExchangeRateUrl"].ToString(), "ThisAPIDoNotUseAPIKey")
+                );
 
             services.AddTransient<IBankingService, BankingService>();
             services.AddTransient<IClientRepository, InMemoryClientRepository>();
