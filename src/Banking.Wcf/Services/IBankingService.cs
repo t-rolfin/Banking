@@ -1,4 +1,6 @@
-﻿using Banking.Shared.Enums;
+﻿using Banking.Core.Entities;
+using Banking.Shared.Enums;
+using Banking.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +18,6 @@ namespace Banking.Wcf.Services
         [FaultContract(typeof(FaultException<ExceptionDetail>))]
         Task<string> CreateAccount(string clientCNP, string PIN, string firstName, string lastName,
             AccountTypeEnum accountType, CurrencyType currencyType);
+
     }
 }
