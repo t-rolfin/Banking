@@ -1,4 +1,4 @@
-# Banking_IntShip
+# Banking
 Banking Application.
 
 # Obiective
